@@ -1,0 +1,1704 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{chapter-4-1}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    Run in Google Colab
+
+    \hypertarget{supervised-models-linear-and-logistic-regression}{%
+\section{Supervised Models: Linear and Logistic
+Regression}\label{supervised-models-linear-and-logistic-regression}}
+
+    \hypertarget{linear-regression}{%
+\subsection{Linear Regression}\label{linear-regression}}
+
+    Despite its simplicity, a good understanding of linear regression is
+prerequisite for understanding how more advanced models work. Generally
+speaking, a linear model makes a prediction by simply computing a
+weighted sum of the input features, plus a constant called the
+\emph{bias} term (also called the \emph{intercept} term):
+
+\begin{equation}
+Y = a + b_1 X_1 + b_2 X_2 + \dots + b_m X_m + \epsilon
+\end{equation}
+
+where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(Y\) is the predicted value (the value of the target);
+\item
+  \(m\) is the number of features;
+\item
+  \(X_i\) is the \(i^{th}\) feature value that are used to predict
+  \(Y\);
+\item
+  \(a\) and \(b_j\) are the \(j^{th}\) model parameters (\(a\) being the
+  bias term and \(b_i\) the weights)
+\item
+  \(\epsilon\) is the predicton error.
+\end{itemize}
+
+As usual the parameters \(a\) and \(b_i\) are chosen to minimize the
+mean squared error over the training data set.
+
+This means that the task in linear regression is to find values for
+\(a\) and \(b_i\) that minimize
+
+\begin{equation}
+\frac{1}{n} \sum\limits_{i=1}^n \left( Y - a - b_1 X_{i1} - b_2 X_{i2} - \dots - b_m X_{im} \right)^2
+\end{equation}
+
+where \(n\) is the size of the training set.
+
+Training a model means setting its parameters so that the model best
+fits the training set. For this purpose, we first need a measure of how
+well (or poorly) the model fits the training data. The most common
+performance measure of a regression model is the Root Mean Square Error
+(RMSE), therefore, to train a Linear Regression model, you need to find
+the value of \(\theta\) that minimizes the RMSE. In practice, it is
+simpler to minimize the Mean Square Error (MSE) than the RMSE, and it
+leads to the same result.
+
+    \hypertarget{example-1---predicting-iowa-house-prices-from-kaggle}{%
+\subsection{Example 1 - Predicting Iowa House Prices (from
+Kaggle)}\label{example-1---predicting-iowa-house-prices-from-kaggle}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} loading packages }
+
+\PY{k+kn}{import} \PY{n+nn}{os}
+
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{c+c1}{\PYZsh{} plotting packages}
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{k+kn}{from} \PY{n+nn}{mpl\PYZus{}toolkits}\PY{n+nn}{.}\PY{n+nn}{mplot3d} \PY{k+kn}{import} \PY{n}{Axes3D}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{cm} \PY{k}{as} \PY{n+nn}{cm}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{colors} \PY{k}{as} \PY{n+nn}{clrs}
+
+\PY{c+c1}{\PYZsh{} Kmeans algorithm from scikit\PYZhy{}learn}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{cluster} \PY{k+kn}{import} \PY{n}{KMeans}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{silhouette\PYZus{}samples}\PY{p}{,} \PY{n}{silhouette\PYZus{}score}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{the-problem}{%
+\paragraph{The Problem}\label{the-problem}}
+
+The objective is to predict the prices of house in Iowa from features.
+We have 800 observations in training set, 600 in validation set, and 508
+in test set
+
+    \hypertarget{categorical-features-see-chapter-2-1}{%
+\paragraph{Categorical Features (See Chapter
+2-1)}\label{categorical-features-see-chapter-2-1}}
+
+Categorical features are features where there are a number of
+non-numerical alternatives. We can define a dummy variable for each
+alternative. The variable equals 1 if the alternative is true and zero
+otherwise. This is known as \textbf{one-hot encoding}. But sometimes we
+do not have to do this because there is a natural ordering of variables.
+For example in this problem one of the categorical features is concerned
+with the basement quality as indicated by the ceiling height. The
+categories are:
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{Excellent (\textless{} 100 inches)}
+\item
+  \emph{Good (90-99 inches)}
+\item
+  \emph{Typical (80-89 inches)}
+\item
+  \emph{Fair (70-79 inches)}
+\item
+  \emph{Poor (\textless{} 70 inches)}
+\item
+  \emph{No Basement}
+\end{itemize}
+
+This is an example of a categorical variable where \emph{there is} a
+natural ordering. We created a new variable that had a values of 5, 4,
+3, 2, 1 and 0 for the above six categories respectively.
+
+The other categorical features specifies the location of the house as in
+one of 25 neighborhoods. We introduce 25 dummy variables with a one-hot
+encoding. The dummy variable equals one for an observation if the
+neighborhood is that in which the house is located and zero otherwise.
+
+    \hypertarget{loading-data-j.-c.-hull-2019-chapter-3}{%
+\paragraph{Loading data (J. C. Hull, 2019, Chapter
+3)}\label{loading-data-j.-c.-hull-2019-chapter-3}}
+
+    To illustrate the regression techniques discussed in this chapter we
+will use a total of 48 feature. 21 are numerical and two are categorical
+and to this we had, as discussed above, 25 categorical variables for the
+neighborhoods.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{if} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{google.colab}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n+nb}{str}\PY{p}{(}\PY{n}{get\PYZus{}ipython}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k+kn}{from} \PY{n+nn}{google}\PY{n+nn}{.}\PY{n+nn}{colab} \PY{k+kn}{import} \PY{n}{files}
+    \PY{n}{uploaded} \PY{o}{=} \PY{n}{files}\PY{o}{.}\PY{n}{upload}\PY{p}{(}\PY{p}{)}
+    \PY{n}{path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}
+\PY{k}{else}\PY{p}{:}
+    \PY{n}{path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./data/}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Both features and target have already been scaled: mean = 0; SD = 1}
+\PY{n}{data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Houseprice\PYZus{}data\PYZus{}scaled.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} 
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+    LotArea  OverallQual  OverallCond  YearBuilt  YearRemodAdd  BsmtFinSF1  \textbackslash{}
+0 -0.199572     0.652747    -0.512407   1.038851      0.875754    0.597837
+1 -0.072005    -0.072527     2.189741   0.136810     -0.432225    1.218528
+2  0.111026     0.652747    -0.512407   0.972033      0.827310    0.095808
+3 -0.077551     0.652747    -0.512407  -1.901135     -0.722887   -0.520319
+4  0.444919     1.378022    -0.512407   0.938624      0.730423    0.481458
+
+   BsmtUnfSF  TotalBsmtSF  1stFlrSF  2ndFlrSF  {\ldots}   OLDTown     SWISU  \textbackslash{}
+0  -0.937245    -0.482464 -0.808820  1.203988  {\ldots} -0.286942 -0.136621
+1  -0.635042     0.490326  0.276358 -0.789421  {\ldots} -0.286942 -0.136621
+2  -0.296754    -0.329118 -0.637758  1.231999  {\ldots} -0.286942 -0.136621
+3  -0.057698    -0.722067 -0.528171  0.975236  {\ldots} -0.286942 -0.136621
+4  -0.170461     0.209990 -0.036366  1.668495  {\ldots} -0.286942 -0.136621
+
+   Sawyer   SawyerW   Somerst   StoneBr    Timber    Veenker  Bsmt Qual  \textbackslash{}
+0 -0.2253 -0.214192 -0.268378 -0.127929 -0.152629  -0.091644   0.584308
+1 -0.2253 -0.214192 -0.268378 -0.127929 -0.152629  10.905682   0.584308
+2 -0.2253 -0.214192 -0.268378 -0.127929 -0.152629  -0.091644   0.584308
+3 -0.2253 -0.214192 -0.268378 -0.127929 -0.152629  -0.091644  -0.577852
+4 -0.2253 -0.214192 -0.268378 -0.127929 -0.152629  -0.091644   0.584308
+
+   Sale Price
+0    0.358489
+1    0.008849
+2    0.552733
+3   -0.528560
+4    0.895898
+
+[5 rows x 48 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    First of all check how many records we have
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Number of available data = }\PY{l+s+s2}{\PYZdq{}}  \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Number of available data = 2908
+    \end{Verbatim}
+
+    Before starting we emphasize the need to divide all available data into
+three parts: a \textbf{training set}, a \textbf{validation set} and a
+\textbf{test set}. The training set is used to determine parameters for
+trial models. The validation set is used to determine the extent to
+chich the models created from the training set generalize to new data.
+Finally, the test set is used as a final estimate of the accuracy of the
+chosen model.
+
+We had 2908 observations. We split this as follows: 1800 in the training
+set, 600 in the validation set and 508 in the test set.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} First 1800 data items are training set; the next 600 are the validation set}
+\PY{n}{train} \PY{o}{=} \PY{n}{data}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{1800}\PY{p}{]} 
+\PY{n}{val} \PY{o}{=} \PY{n}{data}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1800}\PY{p}{:}\PY{l+m+mi}{2400}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    We now procede to create \textbf{labels} and \textbf{features}. As we
+have already said, the labels are the values of the target that is to be
+predicted, in this case the `Sale Price', and we indicate that whit `y':
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}val} \PY{o}{=} \PY{n}{train}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sale Price}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{val}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sale Price}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]} 
+\end{Verbatim}
+\end{tcolorbox}
+
+    The features and dummy variables were scaled using the Z-score method.
+Also the target values (i.e.~the house prices) have been scaled with the
+Z-score method. The features are the variables from which the
+predictions are to be made and, in this case, can be obtained simply
+dropping the column `Sale Price' from our dataset:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{X\PYZus{}val} \PY{o}{=} \PY{n}{train}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sale Price}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{val}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sale Price}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['LotArea', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd',
+       'BsmtFinSF1', 'BsmtUnfSF', 'TotalBsmtSF', '1stFlrSF', '2ndFlrSF',
+       'GrLivArea', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'TotRmsAbvGrd',
+       'Fireplaces', 'GarageCars', 'GarageArea', 'WoodDeckSF', 'OpenPorchSF',
+       'EnclosedPorch', 'Blmngtn', 'Blueste', 'BrDale', 'BrkSide', 'ClearCr',
+       'CollgCr', 'Crawfor', 'Edwards', 'Gilbert', 'IDOTRR', 'MeadowV',
+       'Mitchel', 'Names', 'NoRidge', 'NPkVill', 'NriddgHt', 'NWAmes',
+       'OLDTown', 'SWISU', 'Sawyer', 'SawyerW', 'Somerst', 'StoneBr', 'Timber',
+       'Veenker', 'Bsmt Qual'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{linear-regression-with-sklearn}{%
+\paragraph{Linear Regression with
+sklearn}\label{linear-regression-with-sklearn}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Importing models}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{LinearRegression}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{mean\PYZus{}squared\PYZus{}error} \PY{k}{as} \PY{n}{mse}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{lr} \PY{o}{=} \PY{n}{LinearRegression}\PY{p}{(}\PY{p}{)}
+\PY{n}{lr}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,}\PY{n}{y\PYZus{}train}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+LinearRegression()
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{lr}\PY{o}{.}\PY{n}{intercept\PYZus{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([-3.06335941e-11])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{coeffs} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{p}{[}
+        \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{,}
+        \PY{n+nb}{list}\PY{p}{(}\PY{n}{lr}\PY{o}{.}\PY{n}{intercept\PYZus{}}\PY{p}{)} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n}{lr}\PY{o}{.}\PY{n}{coef\PYZus{}}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{p}{]}
+\PY{p}{)}
+\PY{n}{coeffs}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            0          1            2            3          4             5   \textbackslash{}
+0    intercept    LotArea  OverallQual  OverallCond  YearBuilt  YearRemodAdd
+1 -3.06336e-11  0.0789996     0.214395    0.0964787   0.160799     0.0253524
+
+           6          7            8         9   {\ldots}         38        39  \textbackslash{}
+0  BsmtFinSF1  BsmtUnfSF  TotalBsmtSF  1stFlrSF  {\ldots}     NWAmes   OLDTown
+1   0.0914664 -0.0330798     0.138199  0.152786  {\ldots} -0.0517591 -0.026499
+
+           40         41         42         43         44          45  \textbackslash{}
+0       SWISU     Sawyer    SawyerW    Somerst    StoneBr      Timber
+1 -0.00414298 -0.0181341 -0.0282754  0.0275063  0.0630586 -0.00276173
+
+           46         47
+0     Veenker  Bsmt Qual
+1  0.00240311  0.0113115
+
+[2 rows x 48 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Create dataFrame with corresponding feature and its respective coefficients}
+\PY{n}{coeffs} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{p}{[}
+        \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{,}
+        \PY{n+nb}{list}\PY{p}{(}\PY{n}{lr}\PY{o}{.}\PY{n}{intercept\PYZus{}}\PY{p}{)} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n}{lr}\PY{o}{.}\PY{n}{coef\PYZus{}}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{p}{]}
+\PY{p}{)}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{coeffs}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                         1
+0
+intercept     -3.06336e-11
+LotArea          0.0789996
+OverallQual       0.214395
+OverallCond      0.0964787
+YearBuilt         0.160799
+YearRemodAdd     0.0253524
+BsmtFinSF1       0.0914664
+BsmtUnfSF       -0.0330798
+TotalBsmtSF       0.138199
+1stFlrSF          0.152786
+2ndFlrSF          0.132765
+GrLivArea         0.161303
+FullBath        -0.0208076
+HalfBath         0.0171941
+BedroomAbvGr    -0.0835202
+TotRmsAbvGrd     0.0832203
+Fireplaces       0.0282578
+GarageCars       0.0379971
+GarageArea       0.0518093
+WoodDeckSF       0.0208337
+OpenPorchSF      0.0340982
+EnclosedPorch   0.00682223
+Blmngtn         -0.0184305
+Blueste         -0.0129214
+BrDale          -0.0246262
+BrkSide          0.0207618
+ClearCr        -0.00737828
+CollgCr        -0.00675362
+Crawfor          0.0363235
+Edwards       -0.000690065
+Gilbert        -0.00834022
+IDOTRR         -0.00153683
+MeadowV          -0.016418
+Mitchel         -0.0284821
+Names           -0.0385057
+NoRidge          0.0515626
+NPkVill         -0.0219519
+NriddgHt           0.12399
+NWAmes          -0.0517591
+OLDTown          -0.026499
+SWISU          -0.00414298
+Sawyer          -0.0181341
+SawyerW         -0.0282754
+Somerst          0.0275063
+StoneBr          0.0630586
+Timber         -0.00276173
+Veenker         0.00240311
+Bsmt Qual        0.0113115
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{len}\PY{p}{(}\PY{n}{coeffs}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+48
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pred\PYZus{}t}\PY{o}{=}\PY{n}{lr}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{)}
+\PY{n}{mse}\PY{p}{(}\PY{n}{y\PYZus{}train}\PY{p}{,}\PY{n}{pred\PYZus{}t}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.11401526431246334
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pred\PYZus{}v}\PY{o}{=}\PY{n}{lr}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}val}\PY{p}{)}
+\PY{n}{mse}\PY{p}{(}\PY{n}{y\PYZus{}val}\PY{p}{,}\PY{n}{pred\PYZus{}v}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.11702499460121657
+\end{Verbatim}
+\end{tcolorbox}
+        
+    For the data we are considering it turns out that this regression model
+generalizes well. The mean squared error for the validation set was only
+a little higher than that for the training set. However linear
+regression with no regularization leads to some strange results because
+of the correlation between features. For example it makes no sense that
+the weights for number of full bathrooms and number of bedrooms are
+negative!
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x1} \PY{o}{=} \PY{n}{X\PYZus{}train}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GrLivArea}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{x2} \PY{o}{=} \PY{n}{X\PYZus{}train}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{BedroomAbvGr}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{x1}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{n}{x2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.5347396038733939
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Ridge Regression
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Importing Ridge}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{Ridge}
+\end{Verbatim}
+\end{tcolorbox}
+
+    We try using Ridge regression with different values of the
+hyperparameter \(\lambda\). The following code shows the effect of this
+parameter on the prediction error.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} The alpha used by Python\PYZsq{}s ridge should be the lambda in Hull\PYZsq{}s book times the number of observations}
+\PY{n}{alphas}\PY{o}{=}\PY{p}{[}\PY{l+m+mf}{0.01}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,} \PY{l+m+mf}{0.02}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,} \PY{l+m+mf}{0.03}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,} \PY{l+m+mf}{0.04}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,} \PY{l+m+mf}{0.05}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,} \PY{l+m+mf}{0.075}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,}\PY{l+m+mf}{0.1}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,}\PY{l+m+mf}{0.2}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{,} \PY{l+m+mf}{0.4}\PY{o}{*}\PY{l+m+mi}{1800}\PY{p}{]}
+\PY{n}{mses}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{alpha} \PY{o+ow}{in} \PY{n}{alphas}\PY{p}{:}
+    \PY{n}{ridge}\PY{o}{=}\PY{n}{Ridge}\PY{p}{(}\PY{n}{alpha}\PY{o}{=}\PY{n}{alpha}\PY{p}{)}
+    \PY{n}{ridge}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,}\PY{n}{y\PYZus{}train}\PY{p}{)}
+    \PY{n}{pred}\PY{o}{=}\PY{n}{ridge}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}val}\PY{p}{)}
+    \PY{n}{mses}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mse}\PY{p}{(}\PY{n}{y\PYZus{}val}\PY{p}{,}\PY{n}{pred}\PY{p}{)}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{mse}\PY{p}{(}\PY{n}{y\PYZus{}val}\PY{p}{,}\PY{n}{pred}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0.11703284346091342
+0.11710797319752984
+0.11723952924901117
+0.11741457158889518
+0.1176238406871145
+0.11825709631198021
+0.11900057469147927
+0.1225464999629295
+0.13073599680747128
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{alphas}\PY{p}{,} \PY{n}{mses}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[<matplotlib.lines.Line2D at 0x17a4f841808>]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_36_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    As expected the prediction error increases as \(\lambda\) increases.
+Values of \(\lambda\) in the range \(0\) to \(0.1\) might be reasonably
+be considered because prediction errors increases only slightly when
+\(\lambda\) is in this range. However it turns out that the improvement
+in the model is quite small for these values of \(\lambda\).
+
+    Lasso
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Import Lasso}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{Lasso}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Here we produce results for alpha=0.05 which corresponds to lambda=0.1 in Hull\PYZsq{}s book}
+\PY{n}{lasso} \PY{o}{=} \PY{n}{Lasso}\PY{p}{(}\PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.05}\PY{p}{)}
+\PY{n}{lasso}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Lasso(alpha=0.05)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} DataFrame with corresponding feature and its respective coefficients}
+\PY{n}{coeffs} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+    \PY{p}{[}
+        \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{p}{,}
+        \PY{n+nb}{list}\PY{p}{(}\PY{n}{lasso}\PY{o}{.}\PY{n}{intercept\PYZus{}}\PY{p}{)} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n}{lasso}\PY{o}{.}\PY{n}{coef\PYZus{}}\PY{p}{)}
+    \PY{p}{]}
+\PY{p}{)}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{coeffs}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                         1
+0
+intercept     -1.25303e-11
+LotArea          0.0443042
+OverallQual       0.298079
+OverallCond              0
+YearBuilt        0.0520907
+YearRemodAdd     0.0644712
+BsmtFinSF1        0.115875
+BsmtUnfSF               -0
+TotalBsmtSF        0.10312
+1stFlrSF         0.0322946
+2ndFlrSF                 0
+GrLivArea         0.297065
+FullBath                 0
+HalfBath                 0
+BedroomAbvGr            -0
+TotRmsAbvGrd             0
+Fireplaces       0.0204043
+GarageCars        0.027512
+GarageArea       0.0664096
+WoodDeckSF      0.00102883
+OpenPorchSF     0.00215018
+EnclosedPorch           -0
+Blmngtn                 -0
+Blueste                 -0
+BrDale                  -0
+BrkSide                  0
+ClearCr                  0
+CollgCr                 -0
+Crawfor                  0
+Edwards                 -0
+Gilbert                  0
+IDOTRR                  -0
+MeadowV                 -0
+Mitchel                 -0
+Names                   -0
+NoRidge           0.013209
+NPkVill                 -0
+NriddgHt         0.0842993
+NWAmes                  -0
+OLDTown                 -0
+SWISU                   -0
+Sawyer                  -0
+SawyerW                 -0
+Somerst                  0
+StoneBr          0.0168153
+Timber                   0
+Veenker                  0
+Bsmt Qual        0.0202754
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Lasso with different levels of alpha and its mse
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} We now consider different lambda values. The alphas are half the lambdas}
+\PY{n}{alphas}\PY{o}{=}\PY{p}{[}\PY{l+m+mf}{0.01}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.02}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.03}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.04}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.05}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.06}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.08}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.09}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{]}
+\PY{n}{mses}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{alpha} \PY{o+ow}{in} \PY{n}{alphas}\PY{p}{:}
+    \PY{n}{lasso}\PY{o}{=}\PY{n}{Lasso}\PY{p}{(}\PY{n}{alpha}\PY{o}{=}\PY{n}{alpha}\PY{p}{)}
+    \PY{n}{lasso}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,}\PY{n}{y\PYZus{}train}\PY{p}{)}
+    \PY{n}{pred}\PY{o}{=}\PY{n}{lasso}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}val}\PY{p}{)}
+    \PY{n}{mses}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mse}\PY{p}{(}\PY{n}{y\PYZus{}val}\PY{p}{,}\PY{n}{pred}\PY{p}{)}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{lambda = }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:\PYZlt{}05\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{alpha}\PY{p}{)} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ \PYZhy{} mse = }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n+nb}{round}\PY{p}{(}\PY{n}{mse}\PY{p}{(}\PY{n}{y\PYZus{}val}\PY{p}{,} \PY{n}{pred}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+lambda = 0.005 - mse = 0.116548
+lambda = 0.010 - mse = 0.116827
+lambda = 0.015 - mse = 0.118033
+lambda = 0.020 - mse = 0.120128
+lambda = 0.025 - mse = 0.123015
+lambda = 0.030 - mse = 0.126462
+lambda = 0.040 - mse = 0.133492
+lambda = 0.045 - mse = 0.137016
+lambda = 0.050 - mse = 0.140172
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{alphas}\PY{p}{,} \PY{n}{mses}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[<matplotlib.lines.Line2D at 0x193b3f7fc08>]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_44_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Lasso regression leads to more interesting results. In the plot above
+you can see how the error in the validation set changes as tha value of
+the lasso \(\lambda\) increases. For small values of \(\lambda\) the
+error is actually less than when \(\lambda = 0\) but as \(\lambda\)
+increases beyond about \(0.03\) the error starts to increase. A value of
+\(\lambda = 0.04\) could be chosen.
+
+    \hypertarget{what-is-logistic-regression}{%
+\subsection{What is Logistic
+Regression}\label{what-is-logistic-regression}}
+
+\hypertarget{classification-problem}{%
+\subsubsection{Classification Problem}\label{classification-problem}}
+
+As we know there are two types of supervised learning models: those that
+are used to \textbf{predict} a numerical variable and those that are
+used for \textbf{classification}. Up to now we have considered the
+problem of predicting a numerical variable, we now move on to the
+classification problem. In particular we focus on the so called Binomial
+Logistic Regression, where the response variable has two values 0 and 1
+or pass and fail or true and false. Multinomial Logistic Regression
+deals with situations where the response variable can have three or more
+possible values.
+
+\hypertarget{why-logistic-not-linear}{%
+\subsubsection{Why Logistic, not
+Linear?}\label{why-logistic-not-linear}}
+
+With binary classification, let \(x\) be some feature and \(y\) be the
+output which can be either 0 or 1. The probability that the output is 1
+given its input can be represented as:
+
+\[P(y=1 \vert x) \]
+
+If we predict the probability via linear regression, we can state it as:
+
+\[P(y=1 \vert x) = \beta_0 + \beta_1 X\]
+
+Linear regression model can generate the predicted probability as any
+number ranging from negative to positive infinity, whereas probability
+of an outcome can only lie between 0\textless{} P(x)\textless1.
+
+    \begin{figure}
+\centering
+\includegraphics{./pic/chapter-4-1_pic_0.png}
+\caption{chapter-4-1\_pic\_0.png}
+\end{figure}
+
+    To avoid this problem, log-odds function or logit function is used.
+
+\hypertarget{logit-function}{%
+\subsubsection{Logit Function}\label{logit-function}}
+
+Logistic regression can be expressed as:
+
+\begin{equation}
+\log \left( \frac{p(y=1\vert x)}{1-p(y=1\vert x)}\right) = \beta_0 + \beta_1 X
+\end{equation}
+
+where, the left hand side is called the \emph{logit} or \emph{log-odds}
+function, and \(p/(1-p)\) is called \emph{odds}. The odds signifies the
+ratio of probability of success to probability of failure. Therefore, in
+Logistic Regression, linear combination of inputs are mapped to the
+log(odds) - the output being equal to 1. If we take an inverse of the
+above function, we get:
+
+\begin{equation}
+Q=p(y=1 \vert x) = \frac{e^{\beta_0 + \beta_1 X}}{1+e^{\beta_0 + \beta_1 X}} = \frac{1}{1+e^{-(\beta_0 + \beta_1 X)}} =
+\frac{1}{1+e^{-Y}}
+\end{equation}
+
+where \(Y= \beta_0 + \beta_1 X\).
+
+This is known as the \textbf{Sigmoid Function} and it gives an S-shaped
+curve. It always gives a value of probability ranging from \(0<p<1\).
+Now, let's simply plot the sigmoid function for some values in the range
+--7 to 7 to see how it looks:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{k}{def} \PY{n+nf}{sigmoid}\PY{p}{(}\PY{n}{z}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{l+m+mf}{1.0} \PY{o}{/} \PY{p}{(}\PY{l+m+mf}{1.0} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{z}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{z} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}
+\PY{n}{phi\PYZus{}z} \PY{o}{=} \PY{n}{sigmoid}\PY{p}{(}\PY{n}{z}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{z}\PY{p}{,} \PY{n}{phi\PYZus{}z}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{axvline}\PY{p}{(}\PY{l+m+mf}{0.0}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{1.1}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{z}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{phi (z)\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} y axis ticks and gridline}
+\PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.0}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{]}\PY{p}{)}
+\PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{gca}\PY{p}{(}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{yaxis}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_49_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    The output of the sigmoid function is then interpreted as the
+probability of a particular example belonging to class 1,
+\(\Phi(z) = P(y=1 \vert \mathbf{x}; \mathbf{w})\), given its features,
+\(x\), parameterized by the weights, \(w\). The predicted probability
+can then simply be converted into a binary outcome via a threshold
+function:
+
+\[\hat y = \begin{cases}
+              &1 \quad \text{if } \phi(z) \ge 0.5 \\ & 0 \quad \text{otherwise}
+              \end{cases}\]
+
+If we look at the preceding plot of the sigmoid function, this is
+equivalent to the
+
+following:
+
+\[\hat y = \begin{cases}
+              &1 \quad \text{if } z \ge 0 \\ & 0 \quad \text{otherwise}
+              \end{cases}\]
+
+    \hypertarget{estimation-of-regression-coefficients}{%
+\subsubsection{Estimation of Regression
+Coefficients}\label{estimation-of-regression-coefficients}}
+
+Unlike linear regression model, that uses Ordinary Least Square for
+parameter estimation, we use Maximum Likelihood Estimation. There can be
+infinite sets of regression coefficients. The maximum likelihood
+estimate is that set of regression coefficients for which the
+probability of getting the data we have observed is maximum. In this
+case we can write simply:
+
+\begin{equation}
+{\cal{L}} = \prod\limits_{i=1}^n  Q(\mathbf{\beta}^T \mathbf{x})^{y(i)} \left[ 1 - Q(\mathbf{\beta}^T \mathbf{x})\right]^{1-y(i)} \Rightarrow \log{\cal{L}} = 
+\sum\limits_{i=1}^n
+\left\{
+{y(i)} \cdot Q(\mathbf{\beta}^T \mathbf{x}) 
++ (1-y(i)) \cdot \left[ 1 - Q(\mathbf{\beta}^T \mathbf{x})\right] 
+\right\}
+\end{equation}
+
+Now since in the binomial case \(y_i = 1 \,or\, 0\), we can write
+
+\begin{equation}L=\sum\limits_\text{POS OUT} \, \ln(Q) + \sum\limits_\text{NEG OUT} \, \ln(1-Q) \end{equation}
+
+The first summation is over all the observations which led to positive
+outcomes and the second summation is over all observations which let to
+negative outcomes. This function cannot be maximized analytically and
+gradient ascent (analogous to gradient descent) methods must be used.
+
+Let's write a short code snippet to create a plot that illustrates the
+cost of classifying a single training example for different values of
+\(\phi(z)\) :
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{cost\PYZus{}1}\PY{p}{(}\PY{n}{z}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{sigmoid}\PY{p}{(}\PY{n}{z}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{cost\PYZus{}0}\PY{p}{(}\PY{n}{z}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{sigmoid}\PY{p}{(}\PY{n}{z}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{z} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}
+\PY{n}{phi\PYZus{}z} \PY{o}{=} \PY{n}{sigmoid}\PY{p}{(}\PY{n}{z}\PY{p}{)}
+\PY{n}{c1} \PY{o}{=} \PY{p}{[}\PY{n}{cost\PYZus{}1}\PY{p}{(}\PY{n}{x}\PY{p}{)} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{z}\PY{p}{]}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{phi\PYZus{}z}\PY{p}{,} \PY{n}{c1}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{J(w) if y=1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{c0} \PY{o}{=} \PY{p}{[}\PY{n}{cost\PYZus{}0}\PY{p}{(}\PY{n}{x}\PY{p}{)} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{z}\PY{p}{]}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{phi\PYZus{}z}\PY{p}{,} \PY{n}{c0}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{J(w) if y=0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{l+m+mf}{0.0}\PY{p}{,} \PY{l+m+mf}{5.1}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{phi\PYZdl{}(z)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{J(w)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{loc}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{best}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_52_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    We can see that the cost approaches 0 (continuous line) if we correctly
+predict that an example belongs to class 1. Similarly, we can see on the
+y-axis that the cost also approaches 0 if we correctly predict y = 0
+(dashed line). However, if the prediction is wrong, the cost goes toward
+infinity. The main point is that we penalize wrong predictions with an
+increasingly larger cost.
+
+    \hypertarget{performance-of-logistic-regression-model}{%
+\subsection{Performance of Logistic Regression
+model}\label{performance-of-logistic-regression-model}}
+
+To evaluate the performance of a logistic regression model, Deviance is
+used in lieu of sum of squares calculations.
+
+\begin{itemize}
+\tightlist
+\item
+  Null Deviance indicates the response predicted by a model with nothing
+  but an intercept.
+\item
+  Model deviance indicates the response predicted by a model on adding
+  independent variables. If the model deviance is significantly smaller
+  than the null deviance, one can conclude that the parameter or set of
+  parameters significantly improved model fit.
+\item
+  Another way to find the accuracy of model is by using Confusion
+  Matrix.
+\end{itemize}
+
+    \begin{figure}
+\centering
+\includegraphics{./pic/chapter-4-1_pic_2.png}
+\caption{image.png}
+\end{figure}
+
+    \hypertarget{example-2---application-to-credit-decision}{%
+\subsection{Example 2 - Application to Credit
+Decision}\label{example-2---application-to-credit-decision}}
+
+    In this section we consider a subset of the data provided by the company
+Lending Club on its credit decision. For a complete description see the
+textbook of J. C. Hull chapter 3, pag. 73.
+
+LENDING CLUB BACKGROUND Lending Club is a peer-to-peer (P2P) lending
+platform, where borrowers submit their loan applications and individual
+lenders select the applications that they want to fund. Borrowers
+receive the full amount of the issued loan minus the origination fee,
+which is paid to the company. Investors purchase notes backed by the
+personal loans and pay Lending Club a service fee.
+
+P2P lending brings down the cost of personal loans compared to
+traditional financing by connecting the borrowers and investors
+directly. However, there is always a risk of investing in a bad loan. In
+fact, the default rate for P2P loans are much higher than that of
+traditional loans. Therefore, the lending industry is highly interested
+in providing the investors with comprehensive risk assessment of the
+loan applications. The company shares data about all loan applications
+made through its platform.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} import packages}
+\PY{k+kn}{import} \PY{n+nn}{warnings}
+\PY{n}{warnings}\PY{o}{.}\PY{n}{filterwarnings}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ignore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{k+kn}{import} \PY{n+nn}{openpyxl}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{LogisticRegression}
+
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{accuracy\PYZus{}score}\PY{p}{,} \PY{n}{recall\PYZus{}score}\PY{p}{,} \PY{n}{precision\PYZus{}score}\PY{p}{,} \PY{n}{f1\PYZus{}score}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{confusion\PYZus{}matrix}\PY{p}{,} \PY{n}{classification\PYZus{}report}\PY{p}{,} \PY{n}{roc\PYZus{}curve}\PY{p}{,} \PY{n}{roc\PYZus{}auc\PYZus{}score}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{precision\PYZus{}recall\PYZus{}curve}\PY{p}{,} \PY{n}{auc}\PY{p}{,} \PY{n}{average\PYZus{}precision\PYZus{}score}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}}
+\PY{c+c1}{\PYZsh{} load file lendingclub\PYZus{}traindata.xlsx}
+\PY{c+c1}{\PYZsh{}}
+\PY{k}{if} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{google.colab}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n+nb}{str}\PY{p}{(}\PY{n}{get\PYZus{}ipython}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k+kn}{from} \PY{n+nn}{google}\PY{n+nn}{.}\PY{n+nn}{colab} \PY{k+kn}{import} \PY{n}{files}
+    \PY{n}{uploaded} \PY{o}{=} \PY{n}{files}\PY{o}{.}\PY{n}{upload}\PY{p}{(}\PY{p}{)}
+    \PY{n}{path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}
+\PY{k}{else}\PY{p}{:}
+    \PY{n}{path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./data/}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}}
+\PY{c+c1}{\PYZsh{} load file lendingclub\PYZus{}testdata.xlsx}
+\PY{c+c1}{\PYZsh{}}
+\PY{k}{if} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{google.colab}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n+nb}{str}\PY{p}{(}\PY{n}{get\PYZus{}ipython}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k+kn}{from} \PY{n+nn}{google}\PY{n+nn}{.}\PY{n+nn}{colab} \PY{k+kn}{import} \PY{n}{files}
+    \PY{n}{uploaded} \PY{o}{=} \PY{n}{files}\PY{o}{.}\PY{n}{upload}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{train} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}excel}\PY{p}{(}\PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lendingclub\PYZus{}traindata.xlsx}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{engine}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{openpyxl}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{test} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}excel}\PY{p}{(}\PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lendingclub\PYZus{}testdata.xlsx}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{engine}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{openpyxl}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 1 = good, 0 = default}
+
+\PY{c+c1}{\PYZsh{} give column names}
+\PY{n}{cols} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{home\PYZus{}ownership}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{income}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dti}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fico\PYZus{}low}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{loan\PYZus{}status}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{train}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{n}{test}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{n}{cols}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{train}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{test}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+   home\_ownership  income    dti  fico\_low  loan\_status
+0               1  44.304  18.47       690            0
+1               0  38.500  33.73       660            0
+2               1  54.000  19.00       660            0
+3               1  60.000  33.98       695            0
+4               0  39.354  10.85       685            0
+--------------------------------
+   home\_ownership  income    dti  fico\_low  loan\_status
+0               1   127.0  10.94       675            0
+1               1   197.0  15.64       710            0
+2               1    25.5  28.75       670            0
+3               1    80.0  20.16       660            0
+4               0    57.0  30.60       675            0
+    \end{Verbatim}
+
+    For the purposes of this exercise, the dataset has already been split
+into train and test set. There are 8695 instances of training set and
+5916 instances of test set with with four features and one target. The
+four features are home\_ownership, income, dti and fico\_low and the
+target is loan status that includes either fully paid or defaulted loans
+only.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} remove target column to create feature only dataset}
+\PY{n}{X\PYZus{}train} \PY{o}{=} \PY{n}{train}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{loan\PYZus{}status}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{X\PYZus{}test} \PY{o}{=} \PY{n}{test}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{loan\PYZus{}status}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} store target column}
+\PY{n}{y\PYZus{}train} \PY{o}{=} \PY{n}{train}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{loan\PYZus{}status}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{y\PYZus{}test} \PY{o}{=} \PY{n}{test}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{loan\PYZus{}status}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{o}{.}\PY{n}{shape}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(8695, 4) (8695,) (5916, 4) (5916,)
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['home\_ownership', 'income', 'dti', 'fico\_low'], dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    By default the mode() method return the highest frequency value in a
+Series
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{y\PYZus{}train}\PY{o}{.}\PY{n}{mode}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+1
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{majority\PYZus{}class} \PY{o}{=} \PY{n}{y\PYZus{}train}\PY{o}{.}\PY{n}{mode}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}        \PY{c+c1}{\PYZsh{} predict fully paid only}
+\PY{n}{prediction} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{full}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{n}{y\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{,} \PY{n}{fill\PYZus{}value}\PY{o}{=}\PY{n}{majority\PYZus{}class}\PY{p}{)}
+\PY{n}{accuracy\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{prediction}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.8276020701552617
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{freq} \PY{o}{=} \PY{n}{y\PYZus{}train}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}           \PY{c+c1}{\PYZsh{} count frequency of different classes in loan status}
+\PY{n}{freq}\PY{o}{/}\PY{n+nb}{sum}\PY{p}{(}\PY{n}{freq}\PY{p}{)}\PY{o}{*}\PY{l+m+mi}{100}                      \PY{c+c1}{\PYZsh{} get percentage of above}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+1    82.760207
+0    17.239793
+Name: loan\_status, dtype: float64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} create an instance of logistic regression}
+\PY{n}{lgstc\PYZus{}reg} \PY{o}{=}  \PY{n}{LogisticRegression}\PY{p}{(}\PY{n}{penalty}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{none}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{solver}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{newton\PYZhy{}cg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}     
+\PY{c+c1}{\PYZsh{} fit training data on logistic regression }
+\PY{n}{lgstc\PYZus{}reg}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}                                                             
+\PY{c+c1}{\PYZsh{} get the coefficients of each features}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{lgstc\PYZus{}reg}\PY{o}{.}\PY{n}{intercept\PYZus{}}\PY{p}{,} \PY{n}{lgstc\PYZus{}reg}\PY{o}{.}\PY{n}{coef\PYZus{}}\PY{p}{)}                                                
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[-6.56518725] [[ 0.13949599  0.00410667 -0.00112302  0.01125204]]
+    \end{Verbatim}
+
+    The bias is estimated as -6.56517476. The coefficient of the logistic
+regression are 0.13949599 for home\_ownership, 0.0041 0667 for income,
+-0.00112303 for dti and 0.01125202 for fico\_low. These are the weights
+(parameters) that maximizes the likelihood of producing our given data
+and hence gives us the least error in predicting our response variable.
+
+The question of how to evaluate the model is of the utmost importance.
+This is where we will test the model's performance on an unseen test set
+and check the results of our chosen measure of success. This step is
+meant to be representative of how the model might perform in the real
+world.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} predict default loans based on test data set}
+\PY{n}{y\PYZus{}pred} \PY{o}{=} \PY{n}{lgstc\PYZus{}reg}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{)}                           
+\end{Verbatim}
+\end{tcolorbox}
+
+    An analyst must decide on a criterion for predicting whether loan will
+be good or default. This involves specifying a threshold By default this
+threshold is set to 0.5, i.e., loans are separated into good and bad
+categories according to whether the probability of no default is greater
+or less than 0.5. However this does not work well for an imbalanced data
+set such as this. It would predict that all loans are good! We will look
+at the results for few other thresholds.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{THRESHOLD} \PY{o}{=} \PY{p}{[}\PY{o}{.}\PY{l+m+mi}{75}\PY{p}{,} \PY{o}{.}\PY{l+m+mi}{80}\PY{p}{,} \PY{o}{.}\PY{l+m+mi}{85}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} df to store results}
+\PY{n}{results} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{THRESHOLD}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{accuracy}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{recall}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{tnr}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{fpr}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{precision}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{f1\PYZus{}score}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)} 
+\PY{c+c1}{\PYZsh{} threshold column}
+\PY{n}{results}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{THRESHOLD}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{THRESHOLD}                                                                           
+             
+\PY{n}{j} \PY{o}{=} \PY{l+m+mi}{0}                                                                                                      
+\PY{c+c1}{\PYZsh{} iterate over each threshold    }
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{THRESHOLD}\PY{p}{:}     
+    \PY{c+c1}{\PYZsh{} fit data to model}
+    \PY{n}{lgstc\PYZus{}reg}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} if prob \PYZgt{} threshold, predict 1}
+    \PY{n}{preds} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{lgstc\PYZus{}reg}\PY{o}{.}\PY{n}{predict\PYZus{}proba}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{n}{i}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}                                       
+    \PY{c+c1}{\PYZsh{} confusion matrix (in percentage)}
+    \PY{n}{cm} \PY{o}{=} \PY{p}{(}\PY{n}{confusion\PYZus{}matrix}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{preds}\PY{p}{,}\PY{n}{labels}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{sample\PYZus{}weight}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{5916} \PY{p}{)}\PY{o}{*}\PY{l+m+mi}{100}                   
+    
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Confusion matrix for threshold =}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{i}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{cm}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}      
+    
+    \PY{n}{TP} \PY{o}{=} \PY{n}{cm}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}   \PY{c+c1}{\PYZsh{} True Positives}
+    \PY{n}{FN} \PY{o}{=} \PY{n}{cm}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}   \PY{c+c1}{\PYZsh{} False Positives}
+    \PY{n}{FP} \PY{o}{=} \PY{n}{cm}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}   \PY{c+c1}{\PYZsh{} True Negatives}
+    \PY{n}{TN} \PY{o}{=} \PY{n}{cm}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}   \PY{c+c1}{\PYZsh{} False Negatives}
+        
+    \PY{n}{results}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{accuracy\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{preds}\PY{p}{)} 
+    \PY{n}{results}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]} \PY{o}{=} \PY{n}{recall\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{preds}\PY{p}{)}
+    \PY{n}{results}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]} \PY{o}{=} \PY{n}{TN}\PY{o}{/}\PY{p}{(}\PY{n}{FP}\PY{o}{+}\PY{n}{TN}\PY{p}{)}  \PY{c+c1}{\PYZsh{} True negative rate}
+    \PY{n}{results}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]} \PY{o}{=} \PY{n}{FP}\PY{o}{/}\PY{p}{(}\PY{n}{FP}\PY{o}{+}\PY{n}{TN}\PY{p}{)}  \PY{c+c1}{\PYZsh{} False positive rate}
+    \PY{n}{results}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{]} \PY{o}{=} \PY{n}{precision\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{preds}\PY{p}{)}
+    \PY{n}{results}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]} \PY{o}{=} \PY{n}{f1\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{preds}\PY{p}{)}
+   
+    \PY{n}{j} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ALL METRICS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(} \PY{n}{results}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+   
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Confusion matrix for threshold = 0.75
+[[77.5862069   4.5300879 ]
+ [16.26098715  1.62271805]]
+
+Confusion matrix for threshold = 0.8
+[[55.34144692 26.77484787]
+ [ 9.75321163  8.13049358]]
+
+Confusion matrix for threshold = 0.85
+[[28.65111562 53.46517918]
+ [ 3.73563218 14.14807302]]
+
+ALL METRICS
+                   0         1         2
+THRESHOLD       0.75       0.8      0.85
+accuracy    0.792089  0.634719  0.427992
+recall      0.944833   0.67394  0.348909
+tnr        0.0907372  0.454631  0.791115
+fpr         0.909263  0.545369  0.208885
+precision   0.826729  0.850169  0.884656
+f1\_score    0.881844  0.751866  0.500443
+    \end{Verbatim}
+
+    We note here from the confusion matrix at threshold 0.75 that while the
+model is good at identifying good loans, however it isn't good at
+identifying the bad loans at all.
+
+We also note that increasing the threshold results in decrease in
+overall accuracy. But the percentage of default loans identified as
+default is higher with increasing threshold. We know by now that
+maximizing the accuracy does not necessarily create the best model.
+Thus, lets look at some other metrics.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ALL METRICS}\PY{l+s+s1}{\PYZsq{}} \PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(} \PY{n}{results}\PY{o}{.}\PY{n}{T} \PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ALL METRICS
+                   0         1         2
+THRESHOLD       0.75       0.8      0.85
+accuracy    0.792089  0.634719  0.427992
+recall      0.944833   0.67394  0.348909
+tnr        0.0907372  0.454631  0.791115
+fpr         0.909263  0.545369  0.208885
+precision   0.826729  0.850169  0.884656
+f1\_score    0.881844  0.751866  0.500443
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{lr\PYZus{}prob}\PY{o}{=}\PY{n}{lgstc\PYZus{}reg}\PY{o}{.}\PY{n}{predict\PYZus{}proba}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{)}
+\PY{n}{lr\PYZus{}prob}\PY{o}{=}\PY{n}{lr\PYZus{}prob}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{ns\PYZus{}prob}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{0} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{)}\PY{p}{)}\PY{p}{]}
+\PY{n}{ns\PYZus{}auc}\PY{o}{=}\PY{n}{roc\PYZus{}auc\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{ns\PYZus{}prob}\PY{p}{)}
+\PY{n}{lr\PYZus{}auc}\PY{o}{=}\PY{n}{roc\PYZus{}auc\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,}\PY{n}{lr\PYZus{}prob}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{ns\PYZus{}auc}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{lr\PYZus{}auc}\PY{p}{)}
+\PY{n}{ns\PYZus{}fpr}\PY{p}{,}\PY{n}{ns\PYZus{}tpr}\PY{p}{,}\PY{n}{\PYZus{}}\PY{o}{=}\PY{n}{roc\PYZus{}curve}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,}\PY{n}{ns\PYZus{}prob}\PY{p}{)}
+\PY{n}{lr\PYZus{}fpr}\PY{p}{,}\PY{n}{lr\PYZus{}tpr}\PY{p}{,}\PY{n}{\PYZus{}}\PY{o}{=}\PY{n}{roc\PYZus{}curve}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,}\PY{n}{lr\PYZus{}prob}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{ns\PYZus{}fpr}\PY{p}{,}\PY{n}{ns\PYZus{}tpr}\PY{p}{,}\PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Random Predction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{lr\PYZus{}fpr}\PY{p}{,}\PY{n}{lr\PYZus{}tpr}\PY{p}{,}\PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Logistic Regression}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{False Positive Rate}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{True Positive Rate}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+0.5
+0.6019668412790937
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_76_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Recall and true negative rate are also decreasing with increase in
+threshold rate. However, precision and false positive rate are
+increasing with increasing threshold.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{references}{%
+\subsection{References}\label{references}}
+
+    John C. Hull, \textbf{Machine Learning in Business: An Introduction to
+the World of Data Science}, Amazon, 2019.
+
+Paul Wilmott, \textbf{Machine Learning: An Applied Mathematics
+Introduction}, Panda Ohana Publishing, 2019.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

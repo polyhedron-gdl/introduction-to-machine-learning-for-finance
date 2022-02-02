@@ -1,0 +1,3830 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{chapter-1-2}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    Run in Google Colab
+
+    \hypertarget{python-library-for-data-science-a-quick-glance}{%
+\section{Python Library for Data Science: A Quick
+Glance}\label{python-library-for-data-science-a-quick-glance}}
+
+    \hypertarget{introduction}{%
+\subsection{Introduction}\label{introduction}}
+
+In this lesson we will present the main scientific computation libraries
+in python used in data analysis. These are the most important libraries
+of a general nature for analyzing data in Python. In particular we will
+focus on:
+
+\begin{itemize}
+\item
+  \textbf{Numpy} Numpy is a Python library with math functionalities. It
+  allows us to work with multi-dimensional arrays, matrices, generate
+  random numbers, linear algebra routines, and more.
+\item
+  \textbf{Matplotlib/Seaborn} Matplotlib is a library that allows us to
+  make basic plots, while Seaborn specializes in statistics
+  visualization. The main difference is in the lines of code you need to
+  write to create a plot. Seaborn is easier to learn, has default
+  themes, and makes better-looking plots than Matplotlib by default.
+\item
+  \textbf{Pandas} Pandas is a powerful tool that offers a variety of
+  ways to manipulate and clean data. Pandas work with dataframes that
+  structures data in a table similar to an Excel spreadsheet, but faster
+  and with all the power of Python.
+\end{itemize}
+
+We will reserve a specific study in the course of the other lessons on
+two extremely important libraries for machine learning applications:
+scikit-learn and keras.
+
+    \hypertarget{basic-numpy}{%
+\subsection{Basic NumPy}\label{basic-numpy}}
+
+Numpy (it stands for Numerical Python) is the core library for
+scientific computing in Python. It provides a high-performance
+multidimensional array object, and tools for working with these arrays.
+If you are already familiar with MATLAB, you might find this
+\href{http://wiki.scipy.org/NumPy_for_Matlab_Users}{tutorial} useful to
+get started with Numpy. NumPy helps to create arrays (multidimensional
+arrays), with the help of bindings of C++. Therefore, it is quite fast.
+There are in-built functions of NumPy as well. It is the fundamental
+package for scientific computing with Python.
+
+Numpy arrays are collections of things, all of which must be the same
+type, that work similarly to lists (as we've described them so far). The
+most important are:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  You can easily perform elementwise operations (and matrix algebra) on
+  arrays
+\item
+  Arrays can be n-dimensional
+\item
+  There is no equivalent to append, although arrays can be concatenated
+\end{enumerate}
+
+As we shall see, arrays can be created from existing collections such as
+lists, or instantiated ``from scratch'' in a few useful ways.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} We need to import the numpy library to have access to it }
+\PY{c+c1}{\PYZsh{} We can also create an alias for a library, this is something you will commonly see with numpy}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{why-do-we-need-numpy}{%
+\subsubsection{Why do we need NumPy?}\label{why-do-we-need-numpy}}
+
+Does a question arise that why do we need a NumPy array when we have
+python lists? The answer is we can perform operations on all the
+elements of a NumPy array at once, which are not possible with python
+lists. For example, we can't multiply two lists directly we will have to
+do it element-wise. This is where the role of NumPy comes into play.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{list1} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{]}
+\PY{n}{list2} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{list1}\PY{o}{*}\PY{n}{list2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{TypeError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-6-0193bd45e9db>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green}{      2} list2 \textcolor{ansi-yellow-intense}{\textbf{=}} \textcolor{ansi-yellow-intense}{\textbf{[}}\textcolor{ansi-cyan-intense}{\textbf{3}}\textcolor{ansi-yellow-intense}{\textbf{,}} \textcolor{ansi-cyan-intense}{\textbf{4}}\textcolor{ansi-yellow-intense}{\textbf{,}} \textcolor{ansi-cyan-intense}{\textbf{6}}\textcolor{ansi-yellow-intense}{\textbf{,}} \textcolor{ansi-cyan-intense}{\textbf{1}}\textcolor{ansi-yellow-intense}{\textbf{,}} \textcolor{ansi-cyan-intense}{\textbf{5}}\textcolor{ansi-yellow-intense}{\textbf{]}}
+\textcolor{ansi-green}{      3} 
+\textcolor{ansi-green-intense}{\textbf{----> 4}}\textcolor{ansi-yellow-intense}{\textbf{ }}print\textcolor{ansi-yellow-intense}{\textbf{(}}list1\textcolor{ansi-yellow-intense}{\textbf{*}}list2\textcolor{ansi-yellow-intense}{\textbf{)}}
+
+\textcolor{ansi-red-intense}{\textbf{TypeError}}: can't multiply sequence by non-int of type 'list'
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{n}{list1} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{]}
+\PY{n}{list2} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]}
+
+\PY{n}{arr1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{list1}\PY{p}{)}
+\PY{n}{arr2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{list2}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{arr1}\PY{o}{*}\PY{n}{arr2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[ 6 16 36  7 40]
+    \end{Verbatim}
+
+    \hypertarget{arrays}{%
+\subsubsection{Arrays}\label{arrays}}
+
+    A numpy array is a grid of values, all of the same type, and is indexed
+by a tuple of nonnegative integers. \textbf{\emph{The number of
+dimensions is the rank of the array}}; the \textbf{\emph{shape}} of an
+array is a tuple of integers giving \textbf{\emph{the size of the array
+along each dimension}}.
+
+    We can initialize numpy arrays from nested Python lists, and access
+elements using square brackets:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Create a rank 1 array}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{type}\PY{p}{(}\PY{n}{a}\PY{p}{)}\PY{p}{,} \PY{n}{a}\PY{o}{.}\PY{n}{shape}\PY{p}{,} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{5}                 \PY{c+c1}{\PYZsh{} Change an element of the array}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}                  
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+<class 'numpy.ndarray'> (3,) 1 2 3
+[5 2 3]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{]}\PY{p}{)}   \PY{c+c1}{\PYZsh{} Create a rank 2 array}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{b}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The dimension of b is : }\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{.}\PY{n}{ndim}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[1 2 3]
+ [4 5 6]]
+The dimension of b is : 2
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{b}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{b}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{b}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{b}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(2, 3)
+1 2 4
+    \end{Verbatim}
+
+    Numpy also provides many functions to create arrays:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Create an array of all zeros}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+
+\PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}   \PY{c+c1}{\PYZsh{} Create an array of all ones}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{b}\PY{p}{)}
+
+\PY{n}{c} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{full}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{)} \PY{c+c1}{\PYZsh{} Create a constant array}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{p}{)}
+
+\PY{n}{d} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}        \PY{c+c1}{\PYZsh{} Create a 2x2 identity matrix}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{d}\PY{p}{)}
+
+\PY{n}{e} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{random}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} Create an array filled with random values}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{e}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0. 0.]
+ [0. 0.]]
+[[1. 1.]]
+[[7 7]
+ [7 7]]
+[[1. 0.]
+ [0. 1.]]
+[[0.81289678 0.98905384]
+ [0.02005508 0.52106272]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Make an array from a list}
+\PY{n}{alist} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{]}
+\PY{n}{blist} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{]}
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{alist}\PY{p}{)}
+\PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{blist}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{,} \PY{n+nb}{type}\PY{p}{(}\PY{n}{a}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{b}\PY{p}{,} \PY{n+nb}{type}\PY{p}{(}\PY{n}{b}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[2 3 4] <class 'numpy.ndarray'>
+[5 6 7] <class 'numpy.ndarray'>
+    \end{Verbatim}
+
+    \hypertarget{array-indexing}{%
+\subsubsection{Array Indexing}\label{array-indexing}}
+
+    Numpy offers several ways to index into arrays.
+
+    Slicing: Similar to Python lists, numpy arrays can be sliced. Since
+arrays may be multidimensional, you must specify a slice for each
+dimension of the array:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{c+c1}{\PYZsh{} Create the following rank 2 array with shape (3, 4)}
+\PY{c+c1}{\PYZsh{} [[ 1  2  3  4]}
+\PY{c+c1}{\PYZsh{}  [ 5  6  7  8]}
+\PY{c+c1}{\PYZsh{}  [ 9 10 11 12]]}
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(3, 4)
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Use slicing to pull out the subarray consisting of the first 2 rows}
+\PY{c+c1}{\PYZsh{} and columns 1 and 2; b is the following array of shape (2, 2):}
+\PY{c+c1}{\PYZsh{} [[2 3]}
+\PY{c+c1}{\PYZsh{}  [6 7]]}
+\PY{n}{b} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{b}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[2 3]
+ [6 7]]
+    \end{Verbatim}
+
+    \textbf{IMPORTANT} : \textbf{\emph{A slice of an array is a view into
+the same data, so modifying it will modify the original array}}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n}{b} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}
+\PY{c+c1}{\PYZsh{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{a}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ matrix before slicing}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} }
+\PY{c+c1}{\PYZsh{} BEWARE: b[0, 0] is the same piece of data as a[0, 1] !!!}
+\PY{c+c1}{\PYZsh{}}
+\PY{n}{b}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{77}
+\PY{c+c1}{\PYZsh{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+} \PY{l+m+mi}{100}\PY{o}{*}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{a}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ matrix after slicing}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)} 
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+'a' matrix before slicing
+
+[[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]]
+
+--------------------------------------------------------------------------------
+--------------------
+
+'a' matrix after slicing
+
+[[ 1 77  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]]
+    \end{Verbatim}
+
+    \hypertarget{integer-indexing-vs-slicing}{%
+\paragraph{Integer Indexing Vs
+Slicing}\label{integer-indexing-vs-slicing}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Create the following rank 2 array with shape (3, 4)}
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]]
+    \end{Verbatim}
+
+    Two ways of accessing the data in the middle row of the array. Using
+integer indexing yields an array of lower rank, while using slicing
+yields an array of the same rank as the original array:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{row\PYZus{}r1} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{p}{:}\PY{p}{]}    \PY{c+c1}{\PYZsh{} Rank 1 view of the second row of a  }
+\PY{n}{row\PYZus{}r2} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{,} \PY{p}{:}\PY{p}{]}  \PY{c+c1}{\PYZsh{} Rank 2 view of the second row of a}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{row\PYZus{}r1}\PY{p}{,} \PY{n}{row\PYZus{}r1}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{row\PYZus{}r2}\PY{p}{,} \PY{n}{row\PYZus{}r2}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[5 6 7 8] (4,)
+[[5 6 7 8]] (1, 4)
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} We can make the same distinction when accessing columns of an array:}
+\PY{n}{col\PYZus{}r1} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{col\PYZus{}r2} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{col\PYZus{}r1}\PY{p}{,} \PY{n}{col\PYZus{}r1}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{col\PYZus{}r2}\PY{p}{,} \PY{n}{col\PYZus{}r2}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[ 2  6 10] (3,)
+
+[[ 2]
+ [ 6]
+ [10]] (3, 1)
+    \end{Verbatim}
+
+    When you index into numpy arrays using slicing, the resulting array view
+will always be a subarray of the original array. In contrast, integer
+array indexing allows you to construct arbitrary arrays using the data
+from another array. Here is an example:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} An example of integer array indexing.}
+\PY{c+c1}{\PYZsh{} The returned array will have shape (3,)}
+\PY{n}{c} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[ 1  7 12]
+(3,)
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} for example you can get immediately all the diagonal elements of a matrix}
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{13}\PY{p}{,}\PY{l+m+mi}{14}\PY{p}{,}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{16}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n}{c}\PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{l+m+mi}{100}\PY{o}{*}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]
+ [13 14 15 16]]
+
+--------------------------------------------------------------------------------
+--------------------
+
+[ 1  6 11 16]
+    \end{Verbatim}
+
+    \textbf{IMPORTANT :} In case of slice, a view of the array is returned
+but \textbf{index array a copy of the original array is returned.}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{c}\PY{p}{[}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{42}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{c}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{l+m+mi}{100}\PY{o}{*}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[42 42 42 42]
+
+--------------------------------------------------------------------------------
+--------------------
+
+[[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]
+ [13 14 15 16]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} When using integer array indexing, you can reuse the same}
+\PY{c+c1}{\PYZsh{} element from the source array:}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[2 2]
+    \end{Verbatim}
+
+    One useful trick with integer array indexing is selecting or mutating
+one element from each row of a matrix:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 1  2  3  4]
+ [ 5  6  7  8]
+ [ 9 10 11 12]
+ [13 14 15 16]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Create an array of indices}
+\PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Select one element from each row of a using the indices in b}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{,} \PY{n}{b}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Prints \PYZdq{}[ 1  7  9 14]\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[ 1  7  9 14]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Mutate one element from each row of a using the indices in b}
+\PY{n}{a}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{,} \PY{n}{b}\PY{p}{]} \PY{o}{=}\PY{l+m+mi}{42}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[42  2  3  4]
+ [ 5  6 42  8]
+ [42 10 11 12]
+ [13 42 15 16]]
+    \end{Verbatim}
+
+    Slicing and indexing in a multidimensional array can be a little bit
+tricky compared to slicing and indexing in a one-dimensional array.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{array} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{array}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Slicing and indexing in 4x4 array}
+\PY{c+c1}{\PYZsh{} Print first two rows and first two columns}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Print first two rows and first two columns :}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{array}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Print all rows and last two columns}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Print all rows and last two columns        :}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{array}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{:}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Print all column but middle two rows}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Print all column but middle two rows       :}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{array}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{,} \PY{p}{:}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[2 4 5 6]
+ [3 1 6 9]
+ [4 5 1 9]
+ [2 9 1 7]]
+
+Print first two rows and first two columns :
+
+ [[2 4]
+ [3 1]]
+
+Print all rows and last two columns        :
+
+ [[5 6]
+ [6 9]
+ [1 9]
+ [1 7]]
+
+Print all column but middle two rows       :
+
+ [[3 1 6 9]
+ [4 5 1 9]]
+    \end{Verbatim}
+
+    \hypertarget{boolean-array-indexing}{%
+\paragraph{Boolean Array Indexing}\label{boolean-array-indexing}}
+
+Boolean array indexing lets you pick out arbitrary elements of an array.
+Frequently this type of indexing is used to select the elements of an
+array that satisfy some condition. Here is an example:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{bool\PYZus{}idx} \PY{o}{=} \PY{p}{(}\PY{n}{a} \PY{o}{\PYZgt{}} \PY{l+m+mi}{2}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Find the elements of a that are bigger than 2;}
+                    \PY{c+c1}{\PYZsh{} this returns a numpy array of Booleans of the same}
+                    \PY{c+c1}{\PYZsh{} shape as a, where each slot of bool\PYZus{}idx tells}
+                    \PY{c+c1}{\PYZsh{} whether that element of a is \PYZgt{} 2.}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{bool\PYZus{}idx}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[False False]
+ [ True  True]
+ [ True  True]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} We use boolean array indexing to construct a rank 1 array}
+\PY{c+c1}{\PYZsh{} consisting of the elements of a corresponding to the True values}
+\PY{c+c1}{\PYZsh{} of bool\PYZus{}idx}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{n}{bool\PYZus{}idx}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} We can do all of the above in a single concise statement:}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{n}{a} \PY{o}{\PYZgt{}} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[3 4 5 6]
+[3 4 5 6]
+    \end{Verbatim}
+
+    For brevity we have left out a lot of details about numpy array
+indexing; if you want to know more you should read the documentation.
+
+    \hypertarget{datatypes}{%
+\subsubsection{Datatypes}\label{datatypes}}
+
+    Every numpy array is a grid of elements of the same type. Numpy provides
+a large set of numeric datatypes that you can use to construct arrays.
+Numpy tries to guess a datatype when you create an array, but functions
+that construct arrays usually also include an optional argument to
+explicitly specify the datatype. Here is an example:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Let numpy choose the datatype}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{l+m+mf}{2.0}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Let numpy choose the datatype}
+\PY{n}{z} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{int64}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Force a particular datatype}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{dtype}\PY{p}{,} \PY{n}{y}\PY{o}{.}\PY{n}{dtype}\PY{p}{,} \PY{n}{z}\PY{o}{.}\PY{n}{dtype}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+int32 float64 int64
+    \end{Verbatim}
+
+    You can read all about numpy datatypes in the
+\href{http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html}{documentation}.
+
+    \hypertarget{array-math}{%
+\subsubsection{Array Math}\label{array-math}}
+
+    Basic mathematical functions operate elementwise on arrays, and are
+available both as operator overloads and as functions in the numpy
+module:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float64}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{float64}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Elementwise sum; both produce the array}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{+} \PY{n}{y}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 6.  8.]
+ [10. 12.]]
+[[ 6.  8.]
+ [10. 12.]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Elementwise difference; both produce the array}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}} \PY{n}{y}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{subtract}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[-4. -4.]
+ [-4. -4.]]
+[[-4. -4.]
+ [-4. -4.]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Elementwise product; both produce the array}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{*} \PY{n}{y}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{multiply}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 5. 12.]
+ [21. 32.]]
+[[ 5. 12.]
+ [21. 32.]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Elementwise division; both produce the array}
+\PY{c+c1}{\PYZsh{} [[ 0.2         0.33333333]}
+\PY{c+c1}{\PYZsh{}  [ 0.42857143  0.5       ]]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{/} \PY{n}{y}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{divide}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0.2        0.33333333]
+ [0.42857143 0.5       ]]
+[[0.2        0.33333333]
+ [0.42857143 0.5       ]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Elementwise square root; produces the array}
+\PY{c+c1}{\PYZsh{} [[ 1.          1.41421356]}
+\PY{c+c1}{\PYZsh{}  [ 1.73205081  2.        ]]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[1.         1.41421356]
+ [1.73205081 2.        ]]
+    \end{Verbatim}
+
+    Note that unlike MATLAB, \texttt{*} is elementwise multiplication, not
+matrix multiplication. We instead use the dot function to compute inner
+products of vectors, to multiply a vector by a matrix, and to multiply
+matrices. dot is available both as a function in the numpy module and as
+an instance method of array objects:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{v} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{]}\PY{p}{)}
+\PY{n}{w} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{11}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Inner product of vectors; both produce 219}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{v}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{w}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{v}\PY{p}{,} \PY{n}{w}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+219
+219
+    \end{Verbatim}
+
+    You can also use the \texttt{@} operator which is equivalent to numpy's
+\texttt{dot} operator.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{v} \PY{o}{@} \PY{n}{w}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+219
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Matrix / vector product; both produce the rank 1 array [29 67]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{v}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{v}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{@} \PY{n}{v}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[29 67]
+[29 67]
+[29 67]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Matrix / matrix product; both produce the rank 2 array}
+\PY{c+c1}{\PYZsh{} [[19 22]}
+\PY{c+c1}{\PYZsh{}  [43 50]]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{@} \PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[19 22]
+ [43 50]]
+[[19 22]
+ [43 50]]
+[[19 22]
+ [43 50]]
+    \end{Verbatim}
+
+    Numpy provides many useful functions for performing computations on
+arrays; one of the most useful is \texttt{sum}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Compute sum of all elements; prints \PYZdq{}10\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Compute sum of each column; prints \PYZdq{}[4 6]\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Compute sum of each row; prints \PYZdq{}[3 7]\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+10
+[4 6]
+[3 7]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{math}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{p}{,} \PY{l+m+mf}{0.01}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{z} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{w} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{l+m+mi}{20}\PY{o}{*}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{z}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{w}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<function matplotlib.pyplot.show(*args, **kw)>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_67_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    You can find the full list of mathematical functions provided by numpy
+in the
+\href{http://docs.scipy.org/doc/numpy/reference/routines.math.html}{documentation}.
+
+Apart from computing mathematical functions using arrays, we frequently
+need to reshape or otherwise manipulate data in arrays. The simplest
+example of this type of operation is transposing a matrix; to transpose
+a matrix, simply use the T attribute of an array object:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{transpose}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{x}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[1 2]
+ [3 4]]
+transpose
+ [[1 3]
+ [2 4]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{v} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{v} \PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{transpose}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{v}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[1 2 3]]
+transpose
+ [[1]
+ [2]
+ [3]]
+    \end{Verbatim}
+
+    \hypertarget{broadcasting}{%
+\subsubsection{Broadcasting}\label{broadcasting}}
+
+    Suppose we want to add a constant vector to each row of a matrix. We
+could do it like this:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} We will add the vector v to each row of the matrix x,}
+\PY{c+c1}{\PYZsh{} storing the result in the matrix y}
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n}{v} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{42}\PY{p}{,} \PY{l+m+mi}{42}\PY{p}{,} \PY{l+m+mi}{42}\PY{p}{]}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty\PYZus{}like}\PY{p}{(}\PY{n}{x}\PY{p}{)}   \PY{c+c1}{\PYZsh{} Create an empty matrix with the same shape as x}
+
+\PY{c+c1}{\PYZsh{} Add the vector v to each row of the matrix x with an explicit loop}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{n}{y}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{p}{:}\PY{p}{]} \PY{o}{+} \PY{n}{v}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[43 44 45]
+ [46 47 48]
+ [49 50 51]
+ [52 53 54]]
+    \end{Verbatim}
+
+    This works; however when the matrix x is very large, computing an
+explicit loop in Python could be slow. Note that adding the vector v to
+each row of the matrix x is equivalent to forming a matrix vv by
+stacking multiple copies of v vertically, then performing elementwise
+summation of x and vv. We could implement this approach like this:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{vv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{tile}\PY{p}{(}\PY{n}{v}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Stack 4 copies of v on top of each other}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{vv}\PY{p}{)}                \PY{c+c1}{\PYZsh{} Prints \PYZdq{}[[42 42 42]}
+                         \PY{c+c1}{\PYZsh{}          [42 42 42]}
+                         \PY{c+c1}{\PYZsh{}          [42 42 42]}
+                         \PY{c+c1}{\PYZsh{}          [42 42 42]]\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[42 42 42]
+ [42 42 42]
+ [42 42 42]
+ [42 42 42]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{y} \PY{o}{=} \PY{n}{x} \PY{o}{+} \PY{n}{vv}  \PY{c+c1}{\PYZsh{} Add x and vv elementwise}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[43 44 45]
+ [46 47 48]
+ [49 50 51]
+ [52 53 54]]
+    \end{Verbatim}
+
+    \textbf{\emph{Broadcasting}} is a powerful mechanism that allows numpy
+to work with arrays of different shapes when performing arithmetic
+operations. Frequently we have a smaller array and a larger array, and
+we want to use the smaller array multiple times to perform some
+operation on the larger array. For example, Numpy broadcasting allows us
+to perform this computation without actually creating multiple copies of
+v. Consider this version, using broadcasting:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{c+c1}{\PYZsh{} We will add the vector v to each row of the matrix x,}
+\PY{c+c1}{\PYZsh{} storing the result in the matrix y}
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n}{v} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{x} \PY{o}{+} \PY{n}{v}  \PY{c+c1}{\PYZsh{} Add v to each row of x using broadcasting}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 2  2  4]
+ [ 5  5  7]
+ [ 8  8 10]
+ [11 11 13]]
+    \end{Verbatim}
+
+    The line \texttt{y\ =\ x\ +\ v} works even though \texttt{x} has shape
+\texttt{(4,\ 3)} and \texttt{v} has shape \texttt{(3,)} due to
+broadcasting; this line works as if v actually had shape
+\texttt{(4,\ 3)}, where each row was a copy of \texttt{v}, and the sum
+was performed elementwise.
+
+Broadcasting two arrays together follows these rules:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  If the arrays do not have the same rank, prepend the shape of the
+  lower rank array with 1s until both shapes have the same length.
+\item
+  The two arrays are said to be compatible in a dimension if they have
+  the same size in the dimension, or if one of the arrays has size 1 in
+  that dimension.
+\item
+  The arrays can be broadcast together if they are compatible in all
+  dimensions.
+\item
+  After broadcasting, each array behaves as if it had shape equal to the
+  elementwise maximum of shapes of the two input arrays.
+\item
+  In any dimension where one array had size 1 and the other array had
+  size greater than 1, the first array behaves as if it were copied
+  along that dimension
+\end{enumerate}
+
+If this explanation does not make sense, try reading the explanation
+from the
+\href{http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html}{documentation}
+or this \href{http://wiki.scipy.org/EricsBroadcastingDoc}{explanation}.
+
+Functions that support broadcasting are known as universal functions.
+You can find the list of all universal functions in the
+\href{http://docs.scipy.org/doc/numpy/reference/ufuncs.html\#available-ufuncs}{documentation}.
+
+Here are some applications of broadcasting:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Compute outer product of vectors}
+\PY{n}{v} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} v has shape (3,)}
+\PY{n}{w} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{)}    \PY{c+c1}{\PYZsh{} w has shape (2,)}
+\PY{c+c1}{\PYZsh{} To compute an outer product, we first reshape v to be a column}
+\PY{c+c1}{\PYZsh{} vector of shape (3, 1); we can then broadcast it against w to yield}
+\PY{c+c1}{\PYZsh{} an output of shape (3, 2), which is the outer product of v and w:}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{v}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)} \PY{o}{*} \PY{n}{w}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 4  5]
+ [ 8 10]
+ [12 15]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Add a vector to each column of a matrix}
+\PY{c+c1}{\PYZsh{} x has shape (2, 3) and w has shape (2,).}
+\PY{c+c1}{\PYZsh{} If we transpose x then it has shape (3, 2) and can be broadcast}
+\PY{c+c1}{\PYZsh{} against w to yield a result of shape (3, 2); transposing this result}
+\PY{c+c1}{\PYZsh{} yields the final result of shape (2, 3) which is the matrix x with}
+\PY{c+c1}{\PYZsh{} the vector w added to each column. Gives the following matrix:}
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZgt{} w array:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{w}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZgt{} x array:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZgt{} x transpose:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZgt{} x transpose plus w:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{T} \PY{o}{+} \PY{n}{w}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZgt{} final result:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{T} \PY{o}{+} \PY{n}{w}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+-----> w array:
+
+[4 5]
+
+-----> x array:
+
+[[1 2 3]
+ [4 5 6]]
+
+-----> x transpose:
+
+[[1 4]
+ [2 5]
+ [3 6]]
+
+-----> x transpose plus w:
+
+[[ 5  9]
+ [ 6 10]
+ [ 7 11]]
+
+-----> final result:
+
+[[ 5  6  7]
+ [ 9 10 11]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Another solution is to reshape w to be a row vector of shape (2, 1);}
+\PY{c+c1}{\PYZsh{} we can then broadcast it directly against x to produce the same}
+\PY{c+c1}{\PYZsh{} output.}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{w}\PY{p}{,} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 5  6  7]
+ [ 9 10 11]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Multiply a matrix by a constant:}
+\PY{c+c1}{\PYZsh{} x has shape (2, 3). Numpy treats scalars as arrays of shape ();}
+\PY{c+c1}{\PYZsh{} these can be broadcast together to shape (2, 3), producing the}
+\PY{c+c1}{\PYZsh{} following array:}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x} \PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 2  4  6]
+ [ 8 10 12]]
+    \end{Verbatim}
+
+    This brief overview has touched on many of the important things that you
+need to know about numpy, but is far from complete. Check out the
+\href{http://docs.scipy.org/doc/numpy/reference/}{numpy reference} to
+find out much more about numpy.
+
+    \hypertarget{numpy-in-data-science-machine-learning}{%
+\subsubsection{NumPy in Data Science \& Machine
+Learning}\label{numpy-in-data-science-machine-learning}}
+
+NumPy is a very popular Python library for large multi-dimensional array
+and matrix processing. With the help of a large collection of high-level
+mathematical functions it is very useful for fundamental scientific
+computations in Machine Learning.
+
+It is particularly useful for,
+
+\begin{itemize}
+\tightlist
+\item
+  Linear Algebra
+\item
+  Fourier Transform
+\item
+  Random Number Generations
+\end{itemize}
+
+High-end libraries like TensorFlow uses NumPy internally for
+manipulation of Tensors.
+
+Lots of ML concepts are tied up with linear algebra. It helps in
+
+\begin{itemize}
+\tightlist
+\item
+  To understand PCA(Principal Component Analysis),
+\item
+  To build better ML algorithms from scratch,
+\item
+  For processing Graphics in ML,
+\item
+  It helps to understand Matrix factorization.
+\end{itemize}
+
+In fact, it could be said that ML completely uses matrix operations. The
+Linear Algebra module of NumPy offers various methods to apply linear
+algebra on any NumPy array. One can find:
+
+\begin{itemize}
+\tightlist
+\item
+  Rank, determinant, transpose, trace, inverse, etc. of an array.
+\item
+  Eigenvalues and eigenvectors of the given matrices
+\item
+  The dot product of two scalar values, as well as vector values.
+\item
+  Solve a linear matrix equation and much more!
+\end{itemize}
+
+    \textbf{Example} Calculating the inverse of a matrix
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{array} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+
+\PY{n}{inverse} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{inv}\PY{p}{(}\PY{n}{array}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{inverse}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 0.17647059 -0.00326797 -0.02287582]
+ [ 0.05882353 -0.13071895  0.08496732]
+ [-0.11764706  0.1503268   0.05228758]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{array}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{inverse}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 1.  0.  0.]
+ [-0.  1.  0.]
+ [-0.  0.  1.]]
+    \end{Verbatim}
+
+    \textbf{Example} Find eigenvalues and eigenvectors
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{eigenVal}\PY{p}{,} \PY{n}{eigenVec} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{array}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{eigenVal}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{eigenVec}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[11.24862343  5.09285054 -5.34147398]
+[[ 0.24511338  0.75669314  0.02645665]
+ [ 0.40622202 -0.03352363 -0.84078293]
+ [ 0.88028581 -0.65291014  0.54072554]]
+    \end{Verbatim}
+
+    \textbf{Example} Solve a linear matrix equation
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+
+\PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{7}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{10}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{solve}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{b}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[1.]
+ [2.]]
+    \end{Verbatim}
+
+    \hypertarget{intro-to-matplotlib}{%
+\subsection{Intro to Matplotlib}\label{intro-to-matplotlib}}
+
+    Matplotlib is a plotting library. In this section give a brief
+introduction to the \texttt{matplotlib.pyplot} module, which provides a
+plotting system similar to that of MATLAB.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{58}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\end{Verbatim}
+\end{tcolorbox}
+
+    By running this special iPython command, we will be displaying plots
+inline:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{plotting}{%
+\subsubsection{Plotting}\label{plotting}}
+
+    The most important function in \texttt{matplotlib} is plot, which allows
+you to plot 2D data. Here is a simple example:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Compute the x and y coordinates for points on a sine curve}
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{3} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Plot the points using matplotlib}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[<matplotlib.lines.Line2D at 0x1cb4b16f208>]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_100_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    With just a little bit of extra work we can easily plot multiple lines
+at once, and add a title, legend, and axis labels:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{y\PYZus{}sin} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y\PYZus{}cos} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Plot the points using matplotlib}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y\PYZus{}sin}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y\PYZus{}cos}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x axis label}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y axis label}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sine and Cosine}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sine}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Cosine}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<matplotlib.legend.Legend at 0x1cb4b1cbac8>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_102_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{subplots}{%
+\subsubsection{Subplots}\label{subplots}}
+
+    You can plot different things in the same figure using the subplot
+function. Here is an example:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Compute the x and y coordinates for points on sine and cosine curves}
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{3} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}
+\PY{n}{y\PYZus{}sin} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y\PYZus{}cos} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Set up a subplot grid that has height 2 and width 1,}
+\PY{c+c1}{\PYZsh{} and set the first such subplot as active.}
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Make the first plot}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y\PYZus{}sin}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sine}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Set the second subplot as active, and make the second plot.}
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y\PYZus{}cos}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Cosine}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Show the figure.}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_105_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    You can read much more about the \texttt{subplot} function in the
+\href{http://matplotlib.org/api/pyplot_api.html\#matplotlib.pyplot.subplot}{documentation}.
+
+    \hypertarget{basic-pandas}{%
+\subsection{Basic Pandas}\label{basic-pandas}}
+
+    The pandas package is probably the most important tool at the disposal
+of Data Scientists and Analysts working in Python today. The powerful
+machine learning and glamorous visualization tools may get all the
+attention, but pandas is the backbone of most data projects. To import
+pandas we usually import it with a shorter name since it's used so much:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Now to the basic components of pandas.
+
+    \hypertarget{core-components-of-pandas-series-and-dataframes}{%
+\subsubsection{Core components of pandas: Series and
+DataFrames}\label{core-components-of-pandas-series-and-dataframes}}
+
+The primary two components of pandas are the \texttt{Series} and
+\texttt{DataFrame}.
+
+A \texttt{Series} is essentially a column, and a \texttt{DataFrame} is a
+multi-dimensional table made up of a collection of Series.
+
+DataFrames and Series are quite similar in that many operations that you
+can do with one you can do with the other, such as filling in null
+values and calculating the mean.
+
+You'll see how these components work when we start working with data
+below.
+
+    \hypertarget{creating-dataframes-from-scratch}{%
+\subsubsection{Creating DataFrames from
+scratch}\label{creating-dataframes-from-scratch}}
+
+Creating DataFrames right in Python is good to know and quite useful
+when testing new methods and functions you find in the pandas docs.
+
+There are \emph{many} ways to create a DataFrame from scratch, a first
+option is to just use a simple \texttt{dict}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Open}\PY{l+s+s1}{\PYZsq{}}  \PY{p}{:}\PY{p}{[}\PY{l+m+mf}{1.20575}\PY{p}{,}\PY{l+m+mf}{1.20566}\PY{p}{,}\PY{l+m+mf}{1.20582}\PY{p}{,}\PY{l+m+mf}{1.20574}\PY{p}{,}\PY{l+m+mf}{1.20596}\PY{p}{,}\PY{l+m+mf}{1.20590}\PY{p}{]}\PY{p}{,} 
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{High}\PY{l+s+s1}{\PYZsq{}}  \PY{p}{:}\PY{p}{[}\PY{l+m+mf}{1.20576}\PY{p}{,}\PY{l+m+mf}{1.20586}\PY{p}{,}\PY{l+m+mf}{1.20592}\PY{p}{,}\PY{l+m+mf}{1.20601}\PY{p}{,}\PY{l+m+mf}{1.20615}\PY{p}{,}\PY{l+m+mf}{1.20593}\PY{p}{]}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Low}\PY{l+s+s1}{\PYZsq{}}   \PY{p}{:}\PY{p}{[}\PY{l+m+mf}{1.20560}\PY{p}{,}\PY{l+m+mf}{1.20565}\PY{p}{,}\PY{l+m+mf}{1.20571}\PY{p}{,}\PY{l+m+mf}{1.20569}\PY{p}{,}\PY{l+m+mf}{1.20582}\PY{p}{,}\PY{l+m+mf}{1.20580}\PY{p}{]}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Close}\PY{l+s+s1}{\PYZsq{}} \PY{p}{:}\PY{p}{[}\PY{l+m+mf}{1.20566}\PY{p}{,}\PY{l+m+mf}{1.20582}\PY{p}{,}\PY{l+m+mf}{1.20572}\PY{p}{,}\PY{l+m+mf}{1.20597}\PY{p}{,}\PY{l+m+mf}{1.20592}\PY{p}{,}\PY{l+m+mf}{1.20588}\PY{p}{]}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Volume}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{p}{[}\PY{l+m+mi}{212}\PY{p}{,}\PY{l+m+mi}{88}\PY{p}{,}\PY{l+m+mi}{83}\PY{p}{,}\PY{l+m+mi}{184}\PY{p}{,}\PY{l+m+mi}{246}\PY{p}{,}\PY{l+m+mi}{131}\PY{p}{]}
+\PY{p}{\PYZcb{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    And then pass it to the pandas DataFrame constructor:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fx\PYZus{}eur\PYZus{}usd} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+\PY{n}{fx\PYZus{}eur\PYZus{}usd}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      Open     High      Low    Close  Volume
+0  1.20575  1.20576  1.20560  1.20566     212
+1  1.20566  1.20586  1.20565  1.20582      88
+2  1.20582  1.20592  1.20571  1.20572      83
+3  1.20574  1.20601  1.20569  1.20597     184
+4  1.20596  1.20615  1.20582  1.20592     246
+5  1.20590  1.20593  1.20580  1.20588     131
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \textbf{How did that work?}
+
+Each \emph{(key, value)} item in \texttt{data} corresponds to a
+\emph{column} in the resulting DataFrame.
+
+The \textbf{Index} of this DataFrame was given to us on creation as the
+numbers 0-3, but we could also create our own when we initialize the
+DataFrame.
+
+Let's have time as our index:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fx\PYZus{}eur\PYZus{}usd}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{08/02/2021 15:25}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PYZbs{}
+                                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{08/02/2021 15:26}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PYZbs{}
+                                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{08/02/2021 15:27}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PYZbs{}
+                                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{08/02/2021 15:28}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PYZbs{}
+                                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{08/02/2021 15:29}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PYZbs{}
+                                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{08/02/2021 15:30}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{fx\PYZus{}eur\PYZus{}usd}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                     Open     High      Low    Close  Volume
+08/02/2021 15:25  1.20575  1.20576  1.20560  1.20566     212
+08/02/2021 15:26  1.20566  1.20586  1.20565  1.20582      88
+08/02/2021 15:27  1.20582  1.20592  1.20571  1.20572      83
+08/02/2021 15:28  1.20574  1.20601  1.20569  1.20597     184
+08/02/2021 15:29  1.20596  1.20615  1.20582  1.20592     246
+08/02/2021 15:30  1.20590  1.20593  1.20580  1.20588     131
+\end{Verbatim}
+\end{tcolorbox}
+        
+    So now we could \textbf{loc}ate a price by using their time:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{67}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fx\PYZus{}eur\PYZus{}usd}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{08/02/2021 15:27}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{67}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Open       1.20582
+High       1.20592
+Low        1.20571
+Close      1.20572
+Volume    83.00000
+Name: 08/02/2021 15:27, dtype: float64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    There's more on locating and extracting data from the DataFrame later,
+but now you should be able to create a DataFrame with any random data to
+learn on.
+
+Let's move on to some quick methods for creating DataFrames from various
+other sources.
+
+    \hypertarget{how-to-read-in-data}{%
+\subsubsection{How to read in data}\label{how-to-read-in-data}}
+
+It's quite simple to load data from various file formats into a
+DataFrame. In the following examples we'll keep using our eur/usd forex
+data, but this time it's coming from various files.
+
+    \hypertarget{reading-data-from-csvs}{%
+\paragraph{Reading data from CSVs}\label{reading-data-from-csvs}}
+
+With CSV files all you need is a single line to load in the data:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./data/csv/}\PY{l+s+s1}{\PYZsq{}}
+
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EURUSD\PYZus{}M1.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                    Time\textbackslash{}tOpen\textbackslash{}tHigh\textbackslash{}tLow\textbackslash{}tClose\textbackslash{}tVolume
+0      2021-02-08 15:25:00\textbackslash{}t1.20575\textbackslash{}t1.20576\textbackslash{}t1.2056\textbackslash{}{\ldots}
+1      2021-02-08 15:26:00\textbackslash{}t1.20566\textbackslash{}t1.20586\textbackslash{}t1.20565{\ldots}
+2      2021-02-08 15:27:00\textbackslash{}t1.20582\textbackslash{}t1.20592\textbackslash{}t1.20571{\ldots}
+3      2021-02-08 15:28:00\textbackslash{}t1.20574\textbackslash{}t1.20601\textbackslash{}t1.20569{\ldots}
+4      2021-02-08 15:29:00\textbackslash{}t1.20596\textbackslash{}t1.20615\textbackslash{}t1.20582{\ldots}
+{\ldots}                                                  {\ldots}
+49995  2021-03-29 12:55:00\textbackslash{}t1.17814\textbackslash{}t1.17827\textbackslash{}t1.17812{\ldots}
+49996  2021-03-29 12:56:00\textbackslash{}t1.17824\textbackslash{}t1.17825\textbackslash{}t1.17819{\ldots}
+49997  2021-03-29 12:57:00\textbackslash{}t1.17825\textbackslash{}t1.17847\textbackslash{}t1.1781\textbackslash{}{\ldots}
+49998  2021-03-29 12:58:00\textbackslash{}t1.17846\textbackslash{}t1.17855\textbackslash{}t1.17839{\ldots}
+49999  2021-03-29 12:59:00\textbackslash{}t1.17858\textbackslash{}t1.17859\textbackslash{}t1.17844{\ldots}
+
+[50000 rows x 1 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EURUSD\PYZus{}M1.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{sep} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}t}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                      Time     Open     High      Low    Close  Volume
+0      2021-02-08 15:25:00  1.20575  1.20576  1.20560  1.20566     212
+1      2021-02-08 15:26:00  1.20566  1.20586  1.20565  1.20582      88
+2      2021-02-08 15:27:00  1.20582  1.20592  1.20571  1.20572      83
+3      2021-02-08 15:28:00  1.20574  1.20601  1.20569  1.20597     184
+4      2021-02-08 15:29:00  1.20596  1.20615  1.20582  1.20592     246
+{\ldots}                    {\ldots}      {\ldots}      {\ldots}      {\ldots}      {\ldots}     {\ldots}
+49995  2021-03-29 12:55:00  1.17814  1.17827  1.17812  1.17823      88
+49996  2021-03-29 12:56:00  1.17824  1.17825  1.17819  1.17825      58
+49997  2021-03-29 12:57:00  1.17825  1.17847  1.17810  1.17845     109
+49998  2021-03-29 12:58:00  1.17846  1.17855  1.17839  1.17855      92
+49999  2021-03-29 12:59:00  1.17858  1.17859  1.17844  1.17855     154
+
+[50000 rows x 6 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    CSVs don't have indexes like our DataFrames, so all we need to do is
+just designate the \texttt{index\_col} when reading:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EURUSD\PYZus{}M1.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{sep} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}t}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{index\PYZus{}col}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                        Open     High      Low    Close  Volume
+Time
+2021-02-08 15:25:00  1.20575  1.20576  1.20560  1.20566     212
+2021-02-08 15:26:00  1.20566  1.20586  1.20565  1.20582      88
+2021-02-08 15:27:00  1.20582  1.20592  1.20571  1.20572      83
+2021-02-08 15:28:00  1.20574  1.20601  1.20569  1.20597     184
+2021-02-08 15:29:00  1.20596  1.20615  1.20582  1.20592     246
+{\ldots}                      {\ldots}      {\ldots}      {\ldots}      {\ldots}     {\ldots}
+2021-03-29 12:55:00  1.17814  1.17827  1.17812  1.17823      88
+2021-03-29 12:56:00  1.17824  1.17825  1.17819  1.17825      58
+2021-03-29 12:57:00  1.17825  1.17847  1.17810  1.17845     109
+2021-03-29 12:58:00  1.17846  1.17855  1.17839  1.17855      92
+2021-03-29 12:59:00  1.17858  1.17859  1.17844  1.17855     154
+
+[50000 rows x 5 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{most-important-dataframe-operations}{%
+\subsubsection{Most important DataFrame
+operations}\label{most-important-dataframe-operations}}
+
+DataFrames possess hundreds of methods and other operations that are
+crucial to any analysis. As a beginner, you should know the operations
+that perform simple transformations of your data and those that provide
+fundamental statistical analysis.
+
+Let's load in the IMDB movies dataset to begin:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{71}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{path} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{IMDB\PYZhy{}Movie\PYZhy{}Data.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{index\PYZus{}col}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Title}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    We're loading this dataset from a CSV and designating the movie titles
+to be our index.
+
+    \hypertarget{viewing-your-data}{%
+\paragraph{Viewing your data}\label{viewing-your-data}}
+
+The first thing to do when opening a new dataset is print out a few rows
+to keep as a visual reference. We accomplish this with \texttt{.head()}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-1-b687c1d924a0>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}head\textcolor{ansi-yellow-intense}{\textbf{(}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    \texttt{.head()} outputs the \textbf{first} five rows of your DataFrame
+by default, but we could also pass a number as well:
+\texttt{movies\_df.head(10)} would output the top ten rows, for example.
+
+To see the \textbf{last} five rows use \texttt{.tail()}. \texttt{tail()}
+also accepts a number, and in this case we printing the bottom two
+rows.:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{tail}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-2-46b7a669ef61>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}tail\textcolor{ansi-yellow-intense}{\textbf{(}}\textcolor{ansi-cyan-intense}{\textbf{2}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    Typically when we load in a dataset, we like to view the first five or
+so rows to see what's under the hood. Here we can see the names of each
+column, the index, and examples of values in each row.
+
+You'll notice that the index in our DataFrame is the \emph{Title}
+column, which you can tell by how the word \emph{Title} is slightly
+lower than the rest of the columns.
+
+    \hypertarget{getting-info-about-your-data}{%
+\paragraph{Getting info about your
+data}\label{getting-info-about-your-data}}
+
+\texttt{.info()} should be one of the very first commands you run after
+loading your data:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{info}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-3-0dc782dfd5a1>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}info\textcolor{ansi-yellow-intense}{\textbf{(}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    \texttt{.info()} provides the essential details about your dataset, such
+as the number of rows and columns, the number of non-null values, what
+type of data is in each column, and how much memory your DataFrame is
+using.
+
+Notice in our movies dataset we have some obvious missing values in the
+\texttt{Revenue} and \texttt{Metascore} columns. We'll look at how to
+handle those in a bit.
+
+Seeing the datatype quickly is actually quite useful. Imagine you just
+imported some JSON and the integers were recorded as strings. You go to
+do some arithmetic and find an ``unsupported operand'' Exception because
+you can't do math with strings. Calling \texttt{.info()} will quickly
+point out that your column you thought was all integers are actually
+string objects.
+
+Another fast and useful attribute is \texttt{.shape}, which outputs just
+a tuple of (rows, columns):
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-4-971005451c9b>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}shape
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    Note that \texttt{.shape} has no parentheses and is a simple tuple of
+format (rows, columns). So we have \textbf{1000 rows} and \textbf{11
+columns} in our movies DataFrame.
+
+You'll be going to \texttt{.shape} a lot when cleaning and transforming
+data. For example, you might filter some rows based on some criteria and
+then want to know quickly how many rows were removed.
+
+    \hypertarget{handling-duplicates}{%
+\paragraph{Handling duplicates}\label{handling-duplicates}}
+
+    This dataset does not have duplicate rows, but it is always important to
+verify you aren't aggregating duplicate rows.
+
+To demonstrate, let's simply just double up our movies DataFrame by
+appending it to itself:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{temp\PYZus{}df} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{)}
+
+\PY{n}{temp\PYZus{}df}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-5-682e9f259182>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}temp\_df \textcolor{ansi-yellow-intense}{\textbf{=}} movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}append\textcolor{ansi-yellow-intense}{\textbf{(}}movies\_df\textcolor{ansi-yellow-intense}{\textbf{)}}
+\textcolor{ansi-green}{      2} 
+\textcolor{ansi-green}{      3} temp\_df\textcolor{ansi-yellow-intense}{\textbf{.}}shape
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    Using \texttt{append()} will return a copy without affecting the
+original DataFrame. We are capturing this copy in \texttt{temp} so we
+aren't working with the real data.
+
+Notice call \texttt{.shape} quickly proves our DataFrame rows have
+doubled.
+
+Now we can try dropping duplicates:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{temp\PYZus{}df} \PY{o}{=} \PY{n}{temp\PYZus{}df}\PY{o}{.}\PY{n}{drop\PYZus{}duplicates}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{temp\PYZus{}df}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-6-2e135e66f439>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}temp\_df \textcolor{ansi-yellow-intense}{\textbf{=}} temp\_df\textcolor{ansi-yellow-intense}{\textbf{.}}drop\_duplicates\textcolor{ansi-yellow-intense}{\textbf{(}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+\textcolor{ansi-green}{      2} 
+\textcolor{ansi-green}{      3} temp\_df\textcolor{ansi-yellow-intense}{\textbf{.}}shape
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'temp\_df' is not defined
+    \end{Verbatim}
+
+    Just like \texttt{append()}, the \texttt{drop\_duplicates()} method will
+also return a copy of your DataFrame, but this time with duplicates
+removed. Calling \texttt{.shape} confirms we're back to the 1000 rows of
+our original dataset.
+
+It's a little verbose to keep assigning DataFrames to the same variable
+like in this example. For this reason, pandas has the \texttt{inplace}
+keyword argument on many of its methods. Using \texttt{inplace=True}
+will modify the DataFrame object in place:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{temp\PYZus{}df}\PY{o}{.}\PY{n}{drop\PYZus{}duplicates}\PY{p}{(}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-7-d185a6b6c56f>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}temp\_df\textcolor{ansi-yellow-intense}{\textbf{.}}drop\_duplicates\textcolor{ansi-yellow-intense}{\textbf{(}}inplace\textcolor{ansi-yellow-intense}{\textbf{=}}\textcolor{ansi-green-intense}{\textbf{True}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'temp\_df' is not defined
+    \end{Verbatim}
+
+    Now our \texttt{temp\_df} \emph{will} have the transformed data
+automatically.
+
+Another important argument for \texttt{drop\_duplicates()} is
+\texttt{keep}, which has three possible options:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{first}: (default) Drop duplicates except for the first
+  occurrence.
+\item
+  \texttt{last}: Drop duplicates except for the last occurrence.
+\item
+  \texttt{False}: Drop all duplicates.
+\end{itemize}
+
+Since we didn't define the \texttt{keep} arugment in the previous
+example it was defaulted to \texttt{first}. This means that if two rows
+are the same pandas will drop the second row and keep the first row.
+Using \texttt{last} has the opposite effect: the first row is dropped.
+
+\texttt{keep}, on the other hand, will drop all duplicates. If two rows
+are the same then both will be dropped. Watch what happens to
+\texttt{temp\_df}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{temp\PYZus{}df} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{)}  \PY{c+c1}{\PYZsh{} make a new copy}
+
+\PY{n}{temp\PYZus{}df}\PY{o}{.}\PY{n}{drop\PYZus{}duplicates}\PY{p}{(}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{keep}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+\PY{n}{temp\PYZus{}df}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-8-b0eef36cd1a0>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}temp\_df \textcolor{ansi-yellow-intense}{\textbf{=}} movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}append\textcolor{ansi-yellow-intense}{\textbf{(}}movies\_df\textcolor{ansi-yellow-intense}{\textbf{)}}  \textcolor{ansi-red-intense}{\textbf{\# make a new copy}}
+\textcolor{ansi-green}{      2} 
+\textcolor{ansi-green}{      3} temp\_df\textcolor{ansi-yellow-intense}{\textbf{.}}drop\_duplicates\textcolor{ansi-yellow-intense}{\textbf{(}}inplace\textcolor{ansi-yellow-intense}{\textbf{=}}\textcolor{ansi-green-intense}{\textbf{True}}\textcolor{ansi-yellow-intense}{\textbf{,}} keep\textcolor{ansi-yellow-intense}{\textbf{=}}\textcolor{ansi-green-intense}{\textbf{False}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+\textcolor{ansi-green}{      4} 
+\textcolor{ansi-green}{      5} temp\_df\textcolor{ansi-yellow-intense}{\textbf{.}}shape
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    Since all rows were duplicates, \texttt{keep=False} dropped them all
+resulting in zero rows being left over. If you're wondering why you
+would want to do this, one reason is that it allows you to locate all
+duplicates in your dataset. When conditional selections are shown below
+you'll see how to do that.
+
+    \hypertarget{column-cleanup}{%
+\paragraph{Column cleanup}\label{column-cleanup}}
+
+Many times datasets will have verbose column names with symbols, upper
+and lowercase words, spaces, and typos. To make selecting data by column
+name easier we can spend a little time cleaning up their names.
+
+Here's how to print the column names of our dataset:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['Rank', 'Genre', 'Description', 'Director', 'Actors', 'Year',
+       'Runtime (Minutes)', 'Rating', 'Votes', 'Revenue (Millions)',
+       'Metascore'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Not only does \texttt{.columns} come in handy if you want to rename
+columns by allowing for simple copy and paste, it's also useful if you
+need to understand why you are receiving a \texttt{Key\ Error} when
+selecting data by column.
+
+We can use the \texttt{.rename()} method to rename certain or all
+columns via a \texttt{dict}. We don't want parentheses, so let's rename
+those:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Runtime (Minutes)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Runtime}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Revenue (Millions)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Revenue\PYZus{}millions}\PY{l+s+s1}{\PYZsq{}}
+    \PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['Rank', 'Genre', 'Description', 'Director', 'Actors', 'Year', 'Runtime',
+       'Rating', 'Votes', 'Revenue\_millions', 'Metascore'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    But what if we want to lowercase all names? Instead of using
+\texttt{.rename()} we could also set a list of names to the columns like
+so:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rank}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{actors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{year}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{runtime}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                     \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{votes}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{revenue\PYZus{}millions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{metascore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['rank', 'genre', 'description', 'director', 'actors', 'year', 'runtime',
+       'rating', 'votes', 'revenue\_millions', 'metascore'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    But that's too much work. Instead of just renaming each column manually
+we can do a list comprehension:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{n}{col}\PY{o}{.}\PY{n}{lower}\PY{p}{(}\PY{p}{)} \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{movies\PYZus{}df}\PY{p}{]}
+
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['rank', 'genre', 'description', 'director', 'actors', 'year', 'runtime',
+       'rating', 'votes', 'revenue\_millions', 'metascore'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \texttt{list} (and \texttt{dict}) comprehensions come in handy a lot
+when working with pandas and data in general.
+
+It's a good idea to lowercase, remove special characters, and replace
+spaces with underscores if you'll be working with a dataset for some
+time.
+
+    \hypertarget{how-to-work-with-missing-values}{%
+\subsubsection{How to work with missing
+values}\label{how-to-work-with-missing-values}}
+
+When exploring data, you'll most likely encounter missing or null
+values, which are essentially placeholders for non-existent values. Most
+commonly you'll see Python's \texttt{None} or NumPy's \texttt{np.nan},
+each of which are handled differently in some situations.
+
+There are two options in dealing with nulls:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Get rid of rows or columns with nulls
+\item
+  Replace nulls with non-null values, a technique known as
+  \textbf{imputation}
+\end{enumerate}
+
+Let's calculate to total number of nulls in each column of our dataset.
+The first step is to check which cells in our DataFrame are null:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                          rank  genre  description  director  actors   year  \textbackslash{}
+Title
+Guardians of the Galaxy  False  False        False     False   False  False
+Prometheus               False  False        False     False   False  False
+Split                    False  False        False     False   False  False
+Sing                     False  False        False     False   False  False
+Suicide Squad            False  False        False     False   False  False
+{\ldots}                        {\ldots}    {\ldots}          {\ldots}       {\ldots}     {\ldots}    {\ldots}
+Secret in Their Eyes     False  False        False     False   False  False
+Hostel: Part II          False  False        False     False   False  False
+Step Up 2: The Streets   False  False        False     False   False  False
+Search Party             False  False        False     False   False  False
+Nine Lives               False  False        False     False   False  False
+
+                         runtime  rating  votes  revenue\_millions  metascore
+Title
+Guardians of the Galaxy    False   False  False             False      False
+Prometheus                 False   False  False             False      False
+Split                      False   False  False             False      False
+Sing                       False   False  False             False      False
+Suicide Squad              False   False  False             False      False
+{\ldots}                          {\ldots}     {\ldots}    {\ldots}               {\ldots}        {\ldots}
+Secret in Their Eyes       False   False  False              True      False
+Hostel: Part II            False   False  False             False      False
+Step Up 2: The Streets     False   False  False             False      False
+Search Party               False   False  False              True      False
+Nine Lives                 False   False  False             False      False
+
+[1000 rows x 11 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Notice \texttt{isnull()} returns a DataFrame where each cell is either
+True or False depending on that cell's null status.
+
+To count the number of nulls in each column we use an aggregate function
+for summing:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+rank                  0
+genre                 0
+description           0
+director              0
+actors                0
+year                  0
+runtime               0
+rating                0
+votes                 0
+revenue\_millions    128
+metascore            64
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \texttt{.isnull()} just by iteself isn't very useful, and is usually
+used in conjunction with other methods, like \texttt{sum()}.
+
+We can see now that our data has \textbf{128} missing values for
+\texttt{revenue\_millions} and \textbf{64} missing values for
+\texttt{metascore}.
+
+    \hypertarget{removing-null-values}{%
+\paragraph{Removing null values}\label{removing-null-values}}
+
+Data Scientists and Analysts regularly face the dilemma of dropping or
+imputing null values, and is a decision that requires intimate knowledge
+of your data and its context. Overall, removing null data is only
+suggested if you have a small amount of missing data.
+
+Remove nulls is pretty simple:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                          rank                     genre  \textbackslash{}
+Title
+Guardians of the Galaxy      1   Action,Adventure,Sci-Fi
+Prometheus                   2  Adventure,Mystery,Sci-Fi
+Split                        3           Horror,Thriller
+Sing                         4   Animation,Comedy,Family
+Suicide Squad                5  Action,Adventure,Fantasy
+{\ldots}                        {\ldots}                       {\ldots}
+Resident Evil: Afterlife   994   Action,Adventure,Horror
+Project X                  995                    Comedy
+Hostel: Part II            997                    Horror
+Step Up 2: The Streets     998       Drama,Music,Romance
+Nine Lives                1000     Comedy,Family,Fantasy
+
+                                                                description  \textbackslash{}
+Title
+Guardians of the Galaxy   A group of intergalactic criminals are forced {\ldots}
+Prometheus                Following clues to the origin of mankind, a te{\ldots}
+Split                     Three girls are kidnapped by a man with a diag{\ldots}
+Sing                      In a city of humanoid animals, a hustling thea{\ldots}
+Suicide Squad             A secret government agency recruits some of th{\ldots}
+{\ldots}                                                                     {\ldots}
+Resident Evil: Afterlife  While still out to destroy the evil Umbrella C{\ldots}
+Project X                 3 high school seniors throw a birthday party t{\ldots}
+Hostel: Part II           Three American college students studying abroa{\ldots}
+Step Up 2: The Streets    Romantic sparks occur between two dance studen{\ldots}
+Nine Lives                A stuffy businessman finds himself trapped ins{\ldots}
+
+                                      director  \textbackslash{}
+Title
+Guardians of the Galaxy             James Gunn
+Prometheus                        Ridley Scott
+Split                       M. Night Shyamalan
+Sing                      Christophe Lourdelet
+Suicide Squad                       David Ayer
+{\ldots}                                        {\ldots}
+Resident Evil: Afterlife    Paul W.S. Anderson
+Project X                      Nima Nourizadeh
+Hostel: Part II                       Eli Roth
+Step Up 2: The Streets              Jon M. Chu
+Nine Lives                    Barry Sonnenfeld
+
+                                                                     actors  \textbackslash{}
+Title
+Guardians of the Galaxy   Chris Pratt, Vin Diesel, Bradley Cooper, Zoe S{\ldots}
+Prometheus                Noomi Rapace, Logan Marshall-Green, Michael Fa{\ldots}
+Split                     James McAvoy, Anya Taylor-Joy, Haley Lu Richar{\ldots}
+Sing                      Matthew McConaughey,Reese Witherspoon, Seth Ma{\ldots}
+Suicide Squad             Will Smith, Jared Leto, Margot Robbie, Viola D{\ldots}
+{\ldots}                                                                     {\ldots}
+Resident Evil: Afterlife  Milla Jovovich, Ali Larter, Wentworth Miller,K{\ldots}
+Project X                 Thomas Mann, Oliver Cooper, Jonathan Daniel Br{\ldots}
+Hostel: Part II           Lauren German, Heather Matarazzo, Bijou Philli{\ldots}
+Step Up 2: The Streets    Robert Hoffman, Briana Evigan, Cassie Ventura,{\ldots}
+Nine Lives                Kevin Spacey, Jennifer Garner, Robbie Amell,Ch{\ldots}
+
+                          year  runtime  rating   votes  revenue\_millions  \textbackslash{}
+Title
+Guardians of the Galaxy   2014      121     8.1  757074            333.13
+Prometheus                2012      124     7.0  485820            126.46
+Split                     2016      117     7.3  157606            138.12
+Sing                      2016      108     7.2   60545            270.32
+Suicide Squad             2016      123     6.2  393727            325.02
+{\ldots}                        {\ldots}      {\ldots}     {\ldots}     {\ldots}               {\ldots}
+Resident Evil: Afterlife  2010       97     5.9  140900             60.13
+Project X                 2012       88     6.7  164088             54.72
+Hostel: Part II           2007       94     5.5   73152             17.54
+Step Up 2: The Streets    2008       98     6.2   70699             58.01
+Nine Lives                2016       87     5.3   12435             19.64
+
+                          metascore
+Title
+Guardians of the Galaxy        76.0
+Prometheus                     65.0
+Split                          62.0
+Sing                           59.0
+Suicide Squad                  40.0
+{\ldots}                             {\ldots}
+Resident Evil: Afterlife       37.0
+Project X                      48.0
+Hostel: Part II                46.0
+Step Up 2: The Streets         50.0
+Nine Lives                     11.0
+
+[838 rows x 11 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    This operation will delete any \textbf{row} with at least a single null
+value, but it will return a new DataFrame without altering the original
+one. You could specify \texttt{inplace=True} in this method as well.
+
+So in the case of our dataset, this operation would remove 128 rows
+where \texttt{revenue\_millions} is null and 64 rows where
+\texttt{metascore} is null. This obviously seems like a waste since
+there's perfectly good data in the other columns of those dropped rows.
+That's why we'll look at imputation next.
+
+Other than just dropping rows, you can also drop columns with null
+values by setting \texttt{axis=1}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                         rank                     genre  \textbackslash{}
+Title
+Guardians of the Galaxy     1   Action,Adventure,Sci-Fi
+Prometheus                  2  Adventure,Mystery,Sci-Fi
+Split                       3           Horror,Thriller
+Sing                        4   Animation,Comedy,Family
+Suicide Squad               5  Action,Adventure,Fantasy
+{\ldots}                       {\ldots}                       {\ldots}
+Secret in Their Eyes      996       Crime,Drama,Mystery
+Hostel: Part II           997                    Horror
+Step Up 2: The Streets    998       Drama,Music,Romance
+Search Party              999          Adventure,Comedy
+Nine Lives               1000     Comedy,Family,Fantasy
+
+                                                               description  \textbackslash{}
+Title
+Guardians of the Galaxy  A group of intergalactic criminals are forced {\ldots}
+Prometheus               Following clues to the origin of mankind, a te{\ldots}
+Split                    Three girls are kidnapped by a man with a diag{\ldots}
+Sing                     In a city of humanoid animals, a hustling thea{\ldots}
+Suicide Squad            A secret government agency recruits some of th{\ldots}
+{\ldots}                                                                    {\ldots}
+Secret in Their Eyes     A tight-knit team of rising investigators, alo{\ldots}
+Hostel: Part II          Three American college students studying abroa{\ldots}
+Step Up 2: The Streets   Romantic sparks occur between two dance studen{\ldots}
+Search Party             A pair of friends embark on a mission to reuni{\ldots}
+Nine Lives               A stuffy businessman finds himself trapped ins{\ldots}
+
+                                     director  \textbackslash{}
+Title
+Guardians of the Galaxy            James Gunn
+Prometheus                       Ridley Scott
+Split                      M. Night Shyamalan
+Sing                     Christophe Lourdelet
+Suicide Squad                      David Ayer
+{\ldots}                                       {\ldots}
+Secret in Their Eyes                Billy Ray
+Hostel: Part II                      Eli Roth
+Step Up 2: The Streets             Jon M. Chu
+Search Party                   Scot Armstrong
+Nine Lives                   Barry Sonnenfeld
+
+                                                                    actors  \textbackslash{}
+Title
+Guardians of the Galaxy  Chris Pratt, Vin Diesel, Bradley Cooper, Zoe S{\ldots}
+Prometheus               Noomi Rapace, Logan Marshall-Green, Michael Fa{\ldots}
+Split                    James McAvoy, Anya Taylor-Joy, Haley Lu Richar{\ldots}
+Sing                     Matthew McConaughey,Reese Witherspoon, Seth Ma{\ldots}
+Suicide Squad            Will Smith, Jared Leto, Margot Robbie, Viola D{\ldots}
+{\ldots}                                                                    {\ldots}
+Secret in Their Eyes     Chiwetel Ejiofor, Nicole Kidman, Julia Roberts{\ldots}
+Hostel: Part II          Lauren German, Heather Matarazzo, Bijou Philli{\ldots}
+Step Up 2: The Streets   Robert Hoffman, Briana Evigan, Cassie Ventura,{\ldots}
+Search Party             Adam Pally, T.J. Miller, Thomas Middleditch,Sh{\ldots}
+Nine Lives               Kevin Spacey, Jennifer Garner, Robbie Amell,Ch{\ldots}
+
+                         year  runtime  rating   votes
+Title
+Guardians of the Galaxy  2014      121     8.1  757074
+Prometheus               2012      124     7.0  485820
+Split                    2016      117     7.3  157606
+Sing                     2016      108     7.2   60545
+Suicide Squad            2016      123     6.2  393727
+{\ldots}                       {\ldots}      {\ldots}     {\ldots}     {\ldots}
+Secret in Their Eyes     2015      111     6.2   27585
+Hostel: Part II          2007       94     5.5   73152
+Step Up 2: The Streets   2008       98     6.2   70699
+Search Party             2014       93     5.6    4881
+Nine Lives               2016       87     5.3   12435
+
+[1000 rows x 9 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    In our dataset, this operation would drop the \texttt{revenue\_millions}
+and \texttt{metascore} columns.
+
+\textbf{Intuition side note}: What's with this \texttt{axis=1}
+parameter?
+
+It's not immediately obvious where \texttt{axis} comes from and why you
+need it to be 1 for it to affect columns. To see why, just look at the
+\texttt{.shape} output:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(1000, 11)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    As we learned above, this is a tuple that represents the shape of the
+DataFrame, i.e.~1000 rows and 11 columns. Note that the \emph{rows} are
+at index zero of this tuple and \emph{columns} are at \textbf{index one}
+of this tuple. This is why \texttt{axis=1} affects columns. This comes
+from NumPy, and is a great example of why learning NumPy is worth your
+time.
+
+    \hypertarget{imputation}{%
+\subsubsection{Imputation}\label{imputation}}
+
+Imputation is a conventional feature engineering technique used to keep
+valuable data that have null values.
+
+There may be instances where dropping every row with a null value
+removes too big a chunk from your dataset, so instead we can impute that
+null with another value, usually the \textbf{mean} or the
+\textbf{median} of that column.
+
+Let's look at imputing the missing values in the
+\texttt{revenue\_millions} column. First we'll extract that column into
+its own variable:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{revenue} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{revenue\PYZus{}millions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \textbf{\emph{Using square brackets is the general way we select columns
+in a DataFrame}}.
+
+If you remember back to when we created DataFrames from scratch, the
+keys of the \texttt{dict} ended up as column names. Now when we select
+columns of a DataFrame, we use brackets just like if we were accessing a
+Python dictionary.
+
+\texttt{revenue} now contains a Series:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{revenue}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Title
+Guardians of the Galaxy    333.13
+Prometheus                 126.46
+Split                      138.12
+Sing                       270.32
+Suicide Squad              325.02
+Name: revenue\_millions, dtype: float64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Slightly different formatting than a DataFrame, but we still have our
+\texttt{Title} index.
+
+We'll impute the missing values of revenue using the mean. Here's the
+mean value:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{revenue\PYZus{}mean} \PY{o}{=} \PY{n}{revenue}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{revenue\PYZus{}mean}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+82.95637614678897
+\end{Verbatim}
+\end{tcolorbox}
+        
+    With the mean, let's fill the nulls using \texttt{fillna()}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{revenue}\PY{o}{.}\PY{n}{fillna}\PY{p}{(}\PY{n}{revenue\PYZus{}mean}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    We have now replaced all nulls in \texttt{revenue} with the mean of the
+column. Notice that by using \texttt{inplace=True} we have actually
+affected the original \texttt{movies\_df}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+rank                 0
+genre                0
+description          0
+director             0
+actors               0
+year                 0
+runtime              0
+rating               0
+votes                0
+revenue\_millions     0
+metascore           64
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Imputing an entire column with the same value like this is a basic
+example. It would be a better idea to try a more granular imputation by
+Genre or Director.
+
+For example, you would find the mean of the revenue generated in each
+genre individually and impute the nulls in each genre with that genre's
+mean.
+
+Let's now look at more ways to examine and understand the dataset.
+
+    \hypertarget{understanding-your-variables}{%
+\subsubsection{Understanding your
+variables}\label{understanding-your-variables}}
+
+    Using \texttt{describe()} on an entire DataFrame we can get a summary of
+the distribution of continuous variables:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+              rank         year      runtime       rating         votes  \textbackslash{}
+count  1000.000000  1000.000000  1000.000000  1000.000000  1.000000e+03
+mean    500.500000  2012.783000   113.172000     6.723200  1.698083e+05
+std     288.819436     3.205962    18.810908     0.945429  1.887626e+05
+min       1.000000  2006.000000    66.000000     1.900000  6.100000e+01
+25\%     250.750000  2010.000000   100.000000     6.200000  3.630900e+04
+50\%     500.500000  2014.000000   111.000000     6.800000  1.107990e+05
+75\%     750.250000  2016.000000   123.000000     7.400000  2.399098e+05
+max    1000.000000  2016.000000   191.000000     9.000000  1.791916e+06
+
+       revenue\_millions   metascore
+count       1000.000000  936.000000
+mean          82.956376   58.985043
+std           96.412043   17.194757
+min            0.000000   11.000000
+25\%           17.442500   47.000000
+50\%           60.375000   59.500000
+75\%           99.177500   72.000000
+max          936.630000  100.000000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Understanding which numbers are continuous also comes in handy when
+thinking about the type of plot to use to represent your data visually.
+
+\texttt{.describe()} can also be used on a categorical variable to get
+the count of rows, unique count of categories, top category, and freq of
+top category:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+count                        1000
+unique                        207
+top       Action,Adventure,Sci-Fi
+freq                           50
+Name: genre, dtype: object
+\end{Verbatim}
+\end{tcolorbox}
+        
+    This tells us that the genre column has 207 unique values, the top value
+is Action/Adventure/Sci-Fi, which shows up 50 times (freq).
+
+\texttt{.value\_counts()} can tell us the frequency of all values in a
+column:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Action,Adventure,Sci-Fi       50
+Drama                         48
+Comedy,Drama,Romance          35
+Comedy                        32
+Drama,Romance                 31
+Animation,Adventure,Comedy    27
+Action,Adventure,Fantasy      27
+Comedy,Drama                  27
+Comedy,Romance                26
+Crime,Drama,Thriller          24
+Name: genre, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{relationships-between-continuous-variables}{%
+\paragraph{Relationships between continuous
+variables}\label{relationships-between-continuous-variables}}
+
+    By using the correlation method \texttt{.corr()} we can generate the
+relationship between each continuous variable:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                      rank      year   runtime    rating     votes  \textbackslash{}
+rank              1.000000 -0.261605 -0.221739 -0.219555 -0.283876
+year             -0.261605  1.000000 -0.164900 -0.211219 -0.411904
+runtime          -0.221739 -0.164900  1.000000  0.392214  0.407062
+rating           -0.219555 -0.211219  0.392214  1.000000  0.511537
+votes            -0.283876 -0.411904  0.407062  0.511537  1.000000
+revenue\_millions -0.252996 -0.117562  0.247834  0.189527  0.607941
+metascore        -0.191869 -0.079305  0.211978  0.631897  0.325684
+
+                  revenue\_millions  metascore
+rank                     -0.252996  -0.191869
+year                     -0.117562  -0.079305
+runtime                   0.247834   0.211978
+rating                    0.189527   0.631897
+votes                     0.607941   0.325684
+revenue\_millions          1.000000   0.133328
+metascore                 0.133328   1.000000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Correlation tables are a numerical representation of the bivariate
+relationships in the dataset.
+
+Positive numbers indicate a positive correlation --- one goes up the
+other goes up --- and negative numbers represent an inverse correlation
+--- one goes up the other goes down. 1.0 indicates a perfect
+correlation.
+
+So looking in the first row, first column we see \texttt{rank} has a
+perfect correlation with itself, which is obvious. On the other hand,
+the correlation between \texttt{votes} and \texttt{revenue\_millions} is
+0.6. A little more interesting.
+
+Examining bivariate relationships comes in handy when you have an
+outcome or dependent variable in mind and would like to see the features
+most correlated to the increase or decrease of the outcome. You can
+visually represent bivariate relationships with scatterplots (seen below
+in the plotting section).
+
+For a deeper look into data summarizations check out
+\href{https://www.learndatasci.com/tutorials/data-science-statistics-using-python/}{Essential
+Statistics for Data Science}.
+
+Let's now look more at manipulating DataFrames.
+
+    \hypertarget{dataframe-slicing-selecting-extracting}{%
+\subsubsection{DataFrame slicing, selecting,
+extracting}\label{dataframe-slicing-selecting-extracting}}
+
+Up until now we've focused on some basic summaries of our data. We've
+learned about simple column extraction using single brackets, and we
+imputed null values in a column using \texttt{fillna()}. Below are the
+other methods of slicing, selecting, and extracting you'll need to use
+constantly.
+
+It's important to note that, although many methods are the same,
+DataFrames and Series have different attributes, so you'll need be sure
+to know which type you are working with or else you will receive
+attribute errors.
+
+Let's look at working with columns first.
+
+    \hypertarget{by-column}{%
+\paragraph{By column}\label{by-column}}
+
+You already saw how to extract a column using square brackets like this:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{genre\PYZus{}col} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n+nb}{type}\PY{p}{(}\PY{n}{genre\PYZus{}col}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+pandas.core.series.Series
+\end{Verbatim}
+\end{tcolorbox}
+        
+    This will return a \emph{Series}. To extract a column as a
+\emph{DataFrame}, you need to pass a list of column names. In our case
+that's just a single column:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{genre\PYZus{}col} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+
+\PY{n+nb}{type}\PY{p}{(}\PY{n}{genre\PYZus{}col}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+pandas.core.frame.DataFrame
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Since it's just a list, adding another column name is easy:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{subset} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genre}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+
+\PY{n}{subset}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                                            genre  rating
+Title
+Guardians of the Galaxy   Action,Adventure,Sci-Fi     8.1
+Prometheus               Adventure,Mystery,Sci-Fi     7.0
+Split                             Horror,Thriller     7.3
+Sing                      Animation,Comedy,Family     7.2
+Suicide Squad            Action,Adventure,Fantasy     6.2
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Now we'll look at getting data by rows.
+
+    \hypertarget{by-rows}{%
+\paragraph{By rows}\label{by-rows}}
+
+    For rows, we have two options:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{.loc} - \textbf{loc}ates by name
+\item
+  \texttt{.iloc}- \textbf{loc}ates by numerical \textbf{i}ndex
+\end{itemize}
+
+Remember that we are still indexed by movie Title, so to use
+\texttt{.loc} we give it the Title of a movie:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{prom} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Prometheus}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+\PY{n}{prom}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+rank                                                                2
+genre                                        Adventure,Mystery,Sci-Fi
+description         Following clues to the origin of mankind, a te{\ldots}
+director                                                 Ridley Scott
+actors              Noomi Rapace, Logan Marshall-Green, Michael Fa{\ldots}
+year                                                             2012
+runtime                                                           124
+rating                                                              7
+votes                                                          485820
+revenue\_millions                                               126.46
+metascore                                                          65
+Name: Prometheus, dtype: object
+\end{Verbatim}
+\end{tcolorbox}
+        
+    On the other hand, with \texttt{iloc} we give it the numerical index of
+Prometheus:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{prom} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \texttt{loc} and \texttt{iloc} can be thought of as similar to Python
+\texttt{list} slicing. To show this even further, let's select multiple
+rows.
+
+How would you do it with a list? In Python, just slice with brackets
+like \texttt{example\_list{[}1:4{]}}. It's works the same way in pandas:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie\PYZus{}subset} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prometheus}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sing}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{movie\PYZus{}subset} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{4}\PY{p}{]}
+
+\PY{n}{movie\PYZus{}subset}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            rank                     genre  \textbackslash{}
+Title
+Prometheus     2  Adventure,Mystery,Sci-Fi
+Split          3           Horror,Thriller
+Sing           4   Animation,Comedy,Family
+
+                                                  description  \textbackslash{}
+Title
+Prometheus  Following clues to the origin of mankind, a te{\ldots}
+Split       Three girls are kidnapped by a man with a diag{\ldots}
+Sing        In a city of humanoid animals, a hustling thea{\ldots}
+
+                        director  \textbackslash{}
+Title
+Prometheus          Ridley Scott
+Split         M. Night Shyamalan
+Sing        Christophe Lourdelet
+
+                                                       actors  year  runtime  \textbackslash{}
+Title
+Prometheus  Noomi Rapace, Logan Marshall-Green, Michael Fa{\ldots}  2012      124
+Split       James McAvoy, Anya Taylor-Joy, Haley Lu Richar{\ldots}  2016      117
+Sing        Matthew McConaughey,Reese Witherspoon, Seth Ma{\ldots}  2016      108
+
+            rating   votes  revenue\_millions  metascore
+Title
+Prometheus     7.0  485820            126.46       65.0
+Split          7.3  157606            138.12       62.0
+Sing           7.2   60545            270.32       59.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    One important distinction between using \texttt{.loc} and \texttt{.iloc}
+to select multiple rows is that \texttt{.loc} includes the movie
+\emph{Sing} in the result, but when using \texttt{.iloc} we're getting
+rows 1:4 but the movie at index 4 (\emph{Suicide Squad}) is not
+included.
+
+Slicing with \texttt{.iloc} follows the same rules as slicing with
+lists, the object at the index at the end is not included.
+
+\hypertarget{conditional-selections}{%
+\paragraph{Conditional selections}\label{conditional-selections}}
+
+We've gone over how to select columns and rows, but what if we want to
+make a conditional selection?
+
+For example, what if we want to filter our movies DataFrame to show only
+films directed by Ridley Scott or films with a rating greater than or
+equal to 8.0?
+
+To do that, we take a column from the DataFrame and apply a Boolean
+condition to it. Here's an example of a Boolean condition:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{condition} \PY{o}{=} \PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ridley Scott}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{condition}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Title
+Guardians of the Galaxy    False
+Prometheus                  True
+Split                      False
+Sing                       False
+Suicide Squad              False
+Name: director, dtype: bool
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Similar to \texttt{isnull()}, this returns a Series of True and False
+values: True for films directed by Ridley Scott and False for ones not
+directed by him.
+
+We want to filter out all movies not directed by Ridley Scott, in other
+words, we don't want the False films. To return the rows where that
+condition is True we have to pass this operation into the DataFrame:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ridley Scott}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                        rank                     genre  \textbackslash{}
+Title
+Prometheus                 2  Adventure,Mystery,Sci-Fi
+The Martian              103    Adventure,Drama,Sci-Fi
+Robin Hood               388    Action,Adventure,Drama
+American Gangster        471     Biography,Crime,Drama
+Exodus: Gods and Kings   517    Action,Adventure,Drama
+
+                                                              description  \textbackslash{}
+Title
+Prometheus              Following clues to the origin of mankind, a te{\ldots}
+The Martian             An astronaut becomes stranded on Mars after hi{\ldots}
+Robin Hood              In 12th century England, Robin and his band of{\ldots}
+American Gangster       In 1970s America, a detective works to bring d{\ldots}
+Exodus: Gods and Kings  The defiant leader Moses rises up against the {\ldots}
+
+                            director  \textbackslash{}
+Title
+Prometheus              Ridley Scott
+The Martian             Ridley Scott
+Robin Hood              Ridley Scott
+American Gangster       Ridley Scott
+Exodus: Gods and Kings  Ridley Scott
+
+                                                                   actors  \textbackslash{}
+Title
+Prometheus              Noomi Rapace, Logan Marshall-Green, Michael Fa{\ldots}
+The Martian             Matt Damon, Jessica Chastain, Kristen Wiig, Ka{\ldots}
+Robin Hood              Russell Crowe, Cate Blanchett, Matthew Macfady{\ldots}
+American Gangster       Denzel Washington, Russell Crowe, Chiwetel Eji{\ldots}
+Exodus: Gods and Kings  Christian Bale, Joel Edgerton, Ben Kingsley, S{\ldots}
+
+                        year  runtime  rating   votes  revenue\_millions  \textbackslash{}
+Title
+Prometheus              2012      124     7.0  485820            126.46
+The Martian             2015      144     8.0  556097            228.43
+Robin Hood              2010      140     6.7  221117            105.22
+American Gangster       2007      157     7.8  337835            130.13
+Exodus: Gods and Kings  2014      150     6.0  137299             65.01
+
+                        metascore
+Title
+Prometheus                   65.0
+The Martian                  80.0
+Robin Hood                   53.0
+American Gangster            76.0
+Exodus: Gods and Kings       52.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    You can get used to looking at these conditionals by reading it like:
+
+\begin{quote}
+Select movies\_df where movies\_df director equals Ridley Scott
+\end{quote}
+
+Let's look at conditional selections using numerical values by filtering
+the DataFrame by ratings:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mf}{8.6}\PY{p}{]}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                 rank                    genre  \textbackslash{}
+Title
+Interstellar       37   Adventure,Drama,Sci-Fi
+The Dark Knight    55       Action,Crime,Drama
+Inception          81  Action,Adventure,Sci-Fi
+
+                                                       description  \textbackslash{}
+Title
+Interstellar     A team of explorers travel through a wormhole {\ldots}
+The Dark Knight  When the menace known as the Joker wreaks havo{\ldots}
+Inception        A thief, who steals corporate secrets through {\ldots}
+
+                          director  \textbackslash{}
+Title
+Interstellar     Christopher Nolan
+The Dark Knight  Christopher Nolan
+Inception        Christopher Nolan
+
+                                                            actors  year  \textbackslash{}
+Title
+Interstellar     Matthew McConaughey, Anne Hathaway, Jessica Ch{\ldots}  2014
+The Dark Knight  Christian Bale, Heath Ledger, Aaron Eckhart,Mi{\ldots}  2008
+Inception        Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen{\ldots}  2010
+
+                 runtime  rating    votes  revenue\_millions  metascore
+Title
+Interstellar         169     8.6  1047747            187.99       74.0
+The Dark Knight      152     9.0  1791916            533.32       82.0
+Inception            148     8.8  1583625            292.57       74.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    We can make some richer conditionals by using logical operators
+\texttt{\textbar{}} for ``or'' and \texttt{\&} for ``and''.
+
+Let's filter the the DataFrame to show only movies by Christopher Nolan
+OR Ridley Scott:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Christopher Nolan}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ridley Scott}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                 rank                     genre  \textbackslash{}
+Title
+Prometheus          2  Adventure,Mystery,Sci-Fi
+Interstellar       37    Adventure,Drama,Sci-Fi
+The Dark Knight    55        Action,Crime,Drama
+The Prestige       65      Drama,Mystery,Sci-Fi
+Inception          81   Action,Adventure,Sci-Fi
+
+                                                       description  \textbackslash{}
+Title
+Prometheus       Following clues to the origin of mankind, a te{\ldots}
+Interstellar     A team of explorers travel through a wormhole {\ldots}
+The Dark Knight  When the menace known as the Joker wreaks havo{\ldots}
+The Prestige     Two stage magicians engage in competitive one-{\ldots}
+Inception        A thief, who steals corporate secrets through {\ldots}
+
+                          director  \textbackslash{}
+Title
+Prometheus            Ridley Scott
+Interstellar     Christopher Nolan
+The Dark Knight  Christopher Nolan
+The Prestige     Christopher Nolan
+Inception        Christopher Nolan
+
+                                                            actors  year  \textbackslash{}
+Title
+Prometheus       Noomi Rapace, Logan Marshall-Green, Michael Fa{\ldots}  2012
+Interstellar     Matthew McConaughey, Anne Hathaway, Jessica Ch{\ldots}  2014
+The Dark Knight  Christian Bale, Heath Ledger, Aaron Eckhart,Mi{\ldots}  2008
+The Prestige     Christian Bale, Hugh Jackman, Scarlett Johanss{\ldots}  2006
+Inception        Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen{\ldots}  2010
+
+                 runtime  rating    votes  revenue\_millions  metascore
+Title
+Prometheus           124     7.0   485820            126.46       65.0
+Interstellar         169     8.6  1047747            187.99       74.0
+The Dark Knight      152     9.0  1791916            533.32       82.0
+The Prestige         130     8.5   913152             53.08       66.0
+Inception            148     8.8  1583625            292.57       74.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    We need to make sure to group evaluations with parentheses so Python
+knows how to evaluate the conditional.
+
+Using the \texttt{isin()} method we could make this more concise though:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isin}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Christopher Nolan}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ridley Scott}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                 rank                     genre  \textbackslash{}
+Title
+Prometheus          2  Adventure,Mystery,Sci-Fi
+Interstellar       37    Adventure,Drama,Sci-Fi
+The Dark Knight    55        Action,Crime,Drama
+The Prestige       65      Drama,Mystery,Sci-Fi
+Inception          81   Action,Adventure,Sci-Fi
+
+                                                       description  \textbackslash{}
+Title
+Prometheus       Following clues to the origin of mankind, a te{\ldots}
+Interstellar     A team of explorers travel through a wormhole {\ldots}
+The Dark Knight  When the menace known as the Joker wreaks havo{\ldots}
+The Prestige     Two stage magicians engage in competitive one-{\ldots}
+Inception        A thief, who steals corporate secrets through {\ldots}
+
+                          director  \textbackslash{}
+Title
+Prometheus            Ridley Scott
+Interstellar     Christopher Nolan
+The Dark Knight  Christopher Nolan
+The Prestige     Christopher Nolan
+Inception        Christopher Nolan
+
+                                                            actors  year  \textbackslash{}
+Title
+Prometheus       Noomi Rapace, Logan Marshall-Green, Michael Fa{\ldots}  2012
+Interstellar     Matthew McConaughey, Anne Hathaway, Jessica Ch{\ldots}  2014
+The Dark Knight  Christian Bale, Heath Ledger, Aaron Eckhart,Mi{\ldots}  2008
+The Prestige     Christian Bale, Hugh Jackman, Scarlett Johanss{\ldots}  2006
+Inception        Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen{\ldots}  2010
+
+                 runtime  rating    votes  revenue\_millions  metascore
+Title
+Prometheus           124     7.0   485820            126.46       65.0
+Interstellar         169     8.6  1047747            187.99       74.0
+The Dark Knight      152     9.0  1791916            533.32       82.0
+The Prestige         130     8.5   913152             53.08       66.0
+Inception            148     8.8  1583625            292.57       74.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Let's say we want all movies that were released between 2005 and 2010,
+have a rating above 8.0, but made below the 25th percentile in revenue.
+
+Here's how we could do all of that:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}
+    \PY{p}{(}\PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{year}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{2005}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{year}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{2010}\PY{p}{)}\PY{p}{)}
+    \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mf}{8.0}\PY{p}{)}
+    \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{revenue\PYZus{}millions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{revenue\PYZus{}millions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{quantile}\PY{p}{(}\PY{l+m+mf}{0.25}\PY{p}{)}\PY{p}{)}
+\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                     rank               genre  \textbackslash{}
+Title
+3 Idiots              431        Comedy,Drama
+The Lives of Others   477      Drama,Thriller
+Incendies             714   Drama,Mystery,War
+Taare Zameen Par      992  Drama,Family,Music
+
+                                                           description  \textbackslash{}
+Title
+3 Idiots             Two friends are searching for their long lost {\ldots}
+The Lives of Others  In 1984 East Berlin, an agent of the secret po{\ldots}
+Incendies            Twins journey to the Middle East to discover t{\ldots}
+Taare Zameen Par     An eight-year-old boy is thought to be a lazy {\ldots}
+
+                                             director  \textbackslash{}
+Title
+3 Idiots                              Rajkumar Hirani
+The Lives of Others  Florian Henckel von Donnersmarck
+Incendies                            Denis Villeneuve
+Taare Zameen Par                           Aamir Khan
+
+                                                                actors  year  \textbackslash{}
+Title
+3 Idiots               Aamir Khan, Madhavan, Mona Singh, Sharman Joshi  2009
+The Lives of Others  Ulrich Mühe, Martina Gedeck,Sebastian Koch, Ul{\ldots}  2006
+Incendies            Lubna Azabal, Mélissa Désormeaux-Poulin, Maxim{\ldots}  2010
+Taare Zameen Par     Darsheel Safary, Aamir Khan, Tanay Chheda, Sac{\ldots}  2007
+
+                     runtime  rating   votes  revenue\_millions  metascore
+Title
+3 Idiots                 170     8.4  238789              6.52       67.0
+The Lives of Others      137     8.5  278103             11.28       89.0
+Incendies                131     8.2   92863              6.86       80.0
+Taare Zameen Par         165     8.5  102697              1.20       42.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    If you recall up when we used \texttt{.describe()} the 25th percentile
+for revenue was about 17.4, and we can access this value directly by
+using the \texttt{quantile()} method with a float of 0.25.
+
+So here we have only four movies that match that criteria.
+
+    \hypertarget{applying-functions}{%
+\subsubsection{Applying functions}\label{applying-functions}}
+
+It is possible to iterate over a DataFrame or Series as you would with a
+list, but doing so --- especially on large datasets --- is very slow.
+
+An efficient alternative is to \texttt{apply()} a function to the
+dataset. For example, we could use a function to convert movies with an
+8.0 or greater to a string value of ``good'' and the rest to ``bad'' and
+use this transformed values to create a new column.
+
+First we would create a function that, when given a rating, determines
+if it's good or bad:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{rating\PYZus{}function}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{x} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mf}{8.0}\PY{p}{:}
+        \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{good}\PY{l+s+s2}{\PYZdq{}}
+    \PY{k}{else}\PY{p}{:}
+        \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bad}\PY{l+s+s2}{\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Now we want to send the entire rating column through this function,
+which is what \texttt{apply()} does:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{rating\PYZus{}category}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{rating}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{n}{rating\PYZus{}function}\PY{p}{)}
+
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-10-14645f4710d4>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}movies\_df\textcolor{ansi-yellow-intense}{\textbf{[}}\textcolor{ansi-blue-intense}{\textbf{"rating\_category"}}\textcolor{ansi-yellow-intense}{\textbf{]}} \textcolor{ansi-yellow-intense}{\textbf{=}} movies\_df\textcolor{ansi-yellow-intense}{\textbf{[}}\textcolor{ansi-blue-intense}{\textbf{"rating"}}\textcolor{ansi-yellow-intense}{\textbf{]}}\textcolor{ansi-yellow-intense}{\textbf{.}}apply\textcolor{ansi-yellow-intense}{\textbf{(}}rating\_function\textcolor{ansi-yellow-intense}{\textbf{)}}
+\textcolor{ansi-green}{      2} 
+\textcolor{ansi-green}{      3} movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}head\textcolor{ansi-yellow-intense}{\textbf{(}}\textcolor{ansi-cyan-intense}{\textbf{2}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    The \texttt{.apply()} method passes every value in the \texttt{rating}
+column through the \texttt{rating\_function} and then returns a new
+Series. This Series is then assigned to a new column called
+\texttt{rating\_category}.
+
+You can also use anonymous functions as well. This lambda function
+achieves the same result as \texttt{rating\_function}:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{rating\PYZus{}category}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{rating}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{good}\PY{l+s+s1}{\PYZsq{}} \PY{k}{if} \PY{n}{x} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mf}{8.0} \PY{k}{else} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bad}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red-intense}{\textbf{---------------------------------------------------------------------------}}
+\textcolor{ansi-red-intense}{\textbf{NameError}}                                 Traceback (most recent call last)
+\textcolor{ansi-green-intense}{\textbf{<ipython-input-11-2e503968b610>}} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green-intense}{\textbf{----> 1}}\textcolor{ansi-yellow-intense}{\textbf{ }}movies\_df\textcolor{ansi-yellow-intense}{\textbf{[}}\textcolor{ansi-blue-intense}{\textbf{"rating\_category"}}\textcolor{ansi-yellow-intense}{\textbf{]}} \textcolor{ansi-yellow-intense}{\textbf{=}} movies\_df\textcolor{ansi-yellow-intense}{\textbf{[}}\textcolor{ansi-blue-intense}{\textbf{"rating"}}\textcolor{ansi-yellow-intense}{\textbf{]}}\textcolor{ansi-yellow-intense}{\textbf{.}}apply\textcolor{ansi-yellow-intense}{\textbf{(}}\textcolor{ansi-green-intense}{\textbf{lambda}} x\textcolor{ansi-yellow-intense}{\textbf{:}} \textcolor{ansi-blue-intense}{\textbf{'good'}} \textcolor{ansi-green-intense}{\textbf{if}} x \textcolor{ansi-yellow-intense}{\textbf{>=}} \textcolor{ansi-cyan-intense}{\textbf{8.0}} \textcolor{ansi-green-intense}{\textbf{else}} \textcolor{ansi-blue-intense}{\textbf{'bad'}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+\textcolor{ansi-green}{      2} 
+\textcolor{ansi-green}{      3} movies\_df\textcolor{ansi-yellow-intense}{\textbf{.}}head\textcolor{ansi-yellow-intense}{\textbf{(}}\textcolor{ansi-cyan-intense}{\textbf{2}}\textcolor{ansi-yellow-intense}{\textbf{)}}
+
+\textcolor{ansi-red-intense}{\textbf{NameError}}: name 'movies\_df' is not defined
+    \end{Verbatim}
+
+    Overall, using \texttt{apply()} will be much faster than iterating
+manually over rows because pandas is utilizing vectorization.
+
+\begin{quote}
+Vectorization: a style of computer programming where operations are
+applied to whole arrays instead of individual elements
+---\href{https://en.wikipedia.org/wiki/Vectorization}{Wikipedia}
+\end{quote}
+
+A good example of high usage of \texttt{apply()} is during natural
+language processing (NLP) work. You'll need to apply all sorts of text
+cleaning functions to strings to prepare for machine learning.
+
+    \hypertarget{brief-plotting}{%
+\subsubsection{Brief Plotting}\label{brief-plotting}}
+
+Another great thing about pandas is that it integrates with Matplotlib,
+so you get the ability to plot directly off DataFrames and Series. To
+get started we need to import Matplotlib
+(\texttt{pip\ install\ matplotlib}):
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{font.size}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{figure.figsize}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} set font and plot size to be larger}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Now we can begin. There won't be a lot of coverage on plotting, but it
+should be enough to explore you're data easily.
+
+\textbf{Side note:} For categorical variables utilize Bar Charts* and
+Boxplots. For continuous variables utilize Histograms, Scatterplots,
+Line graphs, and Boxplots.
+
+Let's plot the relationship between ratings and revenue. All we need to
+do is call \texttt{.plot()} on \texttt{movies\_df} with some info about
+how to construct the plot:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{kind}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{scatter}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{revenue\PYZus{}millions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Revenue (millions) vs Rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_231_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    What's with the semicolon? It's not a syntax error, just a way to hide
+the
+\texttt{\textless{}matplotlib.axes.\_subplots.AxesSubplot\ at\ 0x26613b5cc18\textgreater{}}
+output when plotting in Jupyter notebooks.
+
+If we want to plot a simple Histogram based on a single column, we can
+call plot on a column:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{kind}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hist}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_233_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Do you remember the \texttt{.describe()} example at the beginning of
+this tutorial? Well, there's a graphical representation of the
+interquartile range, called the Boxplot. Let's recall what
+\texttt{describe()} gives us on the ratings column:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+count    1000.000000
+mean        6.723200
+std         0.945429
+min         1.900000
+25\%         6.200000
+50\%         6.800000
+75\%         7.400000
+max         9.000000
+Name: rating, dtype: float64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Using a Boxplot we can visualize this data:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{kind}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{box}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_237_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Source: \emph{Flowing Data}
+
+By combining categorical and continuous data, we can create a Boxplot of
+revenue that is grouped by the Rating Category we created above:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{58}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{column}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{revenue\PYZus{}millions}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rating\PYZus{}category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+C:\textbackslash{}Users\textbackslash{}User\textbackslash{}Anaconda3\textbackslash{}lib\textbackslash{}site-packages\textbackslash{}numpy\textbackslash{}core\textbackslash{}\_asarray.py:83:
+VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences
+(which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths
+or shapes) is deprecated. If you meant to do this, you must specify
+'dtype=object' when creating the ndarray
+  return array(a, dtype, copy=False, order=order)
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_239_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    That's the general idea of plotting with pandas. There's too many plots
+to mention, so definitely take a look at the \texttt{plot()}
+\href{https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.plot.html}{docs
+here} for more information on what it can do.
+
+    \hypertarget{references-credits}{%
+\section{References \& Credits}\label{references-credits}}
+
+    To keep improving, view the
+\href{https://pandas.pydata.org/pandas-docs/stable/tutorials.html}{extensive
+tutorials} offered by the official pandas docs, follow along with a few
+\href{https://www.kaggle.com/kernels}{Kaggle kernels}, and keep working
+on your own projects!
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
